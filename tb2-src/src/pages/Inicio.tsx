@@ -43,8 +43,8 @@ export default function Inicio({ actividades, onAgregar }: { actividades: Activi
               titulo="Todo tiene fecha oficial por ahora"
               texto="Si anunciaron una actividad en clase y no aparece en tu curso, puedes agregarla."
               accion={
-                <Boton variant="soft" iconoInicio="calendario-mas" onClick={onAgregar}>
-                  Agregar actividad
+                <Boton variant="soft" onClick={onAgregar}>
+                  + Agregar actividad
                 </Boton>
               }
             />
