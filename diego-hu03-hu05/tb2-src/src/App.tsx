@@ -18,6 +18,10 @@ export default function App() {
   const [modal, setModal] = useState<ModoModal | null>(null);
   const [toast, setToast] = useState<AvisoToast | null>(null);
   const idToast = useRef(0);
+  // Actividad que acaba de entrar a una lista oficial: su fila se resalta unos segundos.
+  const [resaltado, setResaltado] = useState<string | null>(null);
+  // Pantalla desde la que se llegó a Sin fecha oficial: decide a dónde lleva una fecha oficial.
+  const origen = useRef("actividades");
 
   useEffect(() => {
     const alCambiar = () => {
@@ -27,6 +31,20 @@ export default function App() {
     window.addEventListener("hashchange", alCambiar);
     return () => window.removeEventListener("hashchange", alCambiar);
   }, []);
+
+  useEffect(() => {
+    if (!esSinFecha(ubicacion)) origen.current = ubicacion.segmentos[0] ?? "inicio";
+  }, [ubicacion]);
+
+  useEffect(() => {
+    if (!resaltado) return;
+    const llevar = window.setTimeout(() => document.querySelector(".fila-resaltada")?.scrollIntoView({ block: "center", behavior: "smooth" }), 80);
+    const quitar = window.setTimeout(() => setResaltado(null), 4500);
+    return () => {
+      window.clearTimeout(llevar);
+      window.clearTimeout(quitar);
+    };
+  }, [resaltado, ubicacion]);
 
   const abrirCrear = () => setModal({ modo: "crear" });
   const abrirCompletar = (actividad: Actividad) => setModal({ modo: "completar", actividad });
@@ -39,6 +57,14 @@ export default function App() {
     setActividades((lista) => (lista.some((x) => x.id === a.id) ? lista.map((x) => (x.id === a.id ? a : x)) : [...lista, a]));
     setModal(null);
     if (a.fechaOficial) {
+      // Con fecha oficial entra a la lista oficial. Desde Evaluaciones solo se navega si es calificada,
+      // para no llevar a una pantalla que no tiene que ver; desde cualquier otra, a Actividades.
+      const desde = esSinFecha(ubicacion) ? origen.current : (ubicacion.segmentos[0] ?? "inicio");
+      const destino = desde === "evaluaciones" ? (a.calificada ? "#/evaluaciones" : null) : "#/actividades";
+      if (destino) {
+        setResaltado(a.id);
+        window.location.hash = destino;
+      }
       const fecha = formatoFecha(a.fechaOficial);
       const texto = creada
         ? `${a.nombre} tiene fecha oficial: ${fecha}. No aparece en Sin fecha oficial`
@@ -46,6 +72,7 @@ export default function App() {
       mostrarToast(texto, {
         etiqueta: "Deshacer",
         onClick: () => {
+          setResaltado(null);
           setActividades(anterior);
           mostrarToast("Cambio deshecho");
         },
@@ -71,9 +98,9 @@ export default function App() {
     pagina = (
       <SinFecha actividades={actividades} cursoFiltro={ubicacion.query.get("curso")} soloEvaluaciones={ubicacion.query.get("solo") === "evaluaciones"} onAccion={abrirCompletar} onAgregar={abrirCrear} />
     );
-  else if (seccion === "actividades") pagina = <ActividadesRuben actividades={actividades} onAgregar={abrirCrear} />;
+  else if (seccion === "actividades") pagina = <ActividadesRuben actividades={actividades} onAgregar={abrirCrear} resaltado={resaltado} />;
   else if (seccion === "calendario") pagina = <CalendarioRuben />;
-  else if (seccion === "evaluaciones") pagina = <Evaluaciones actividades={actividades} />;
+  else if (seccion === "evaluaciones") pagina = <Evaluaciones actividades={actividades} resaltado={resaltado} />;
   else pagina = <Marcador titulo={item?.etiqueta ?? "Página no encontrada"} />;
 
   return (

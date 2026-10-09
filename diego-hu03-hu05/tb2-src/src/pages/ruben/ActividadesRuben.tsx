@@ -2,7 +2,7 @@
 // Cambios: usa el sidebar de la app; "Agregar actividad" abre el modal de HU-03 y la línea de
 // Sin fecha oficial cuenta las actividades reales (D1).
 import { useState } from "react"
-import { cursos, HU01_GRUPOS, sinFechaOficial, type Actividad } from "@/data"
+import { cursos, gruposPendientes, sinFechaOficial, type Actividad } from "@/data"
 import { hrefSinFecha } from "@/rutas"
 import "./estilos-ruben.css"
 
@@ -20,6 +20,8 @@ const icons = {
 type ActivityFilter = "all" | "week" | "overdue"
 
 type Activity = {
+  id: string
+  graded: boolean
   urgency: string
   title: string
   date: string
@@ -28,11 +30,13 @@ type Activity = {
   tone: string
 }
 
-// Los datos vienen del backend (backend.pendientes), agrupados como en su app.
-const activityGroups: { title: string; range: string; activities: Activity[] }[] = HU01_GRUPOS.map((g) => ({
+// Los datos vienen del backend y de las actividades que el alumno marcó como Oficial, agrupados como en su app.
+const agrupar = (actividades: Actividad[]): { title: string; range: string; activities: Activity[] }[] => gruposPendientes(actividades).map((g) => ({
   title: g.titulo,
   range: g.rango,
   activities: g.actividades.map((a) => ({
+    id: a.id,
+    graded: a.calificada,
     urgency: a.plazo,
     title: a.titulo,
     date: a.fecha,
@@ -41,11 +45,9 @@ const activityGroups: { title: string; range: string; activities: Activity[] }[]
     tone: a.curso.tono,
   })),
 }))
-const totalPendientes = activityGroups.reduce((n, g) => n + g.activities.length, 0)
-
-function ActivityRow({ activity }: { activity: Activity }) {
+function ActivityRow({ activity, resaltada }: { activity: Activity; resaltada: boolean }) {
   return (
-    <article className="activity-row">
+    <article className={`activity-row${resaltada ? " fila-resaltada" : ""}`}>
       <div className="activity-name">
         <span
           className={activity.urgency.startsWith("Vence hoy") ? "urgent" : ""}
@@ -57,8 +59,8 @@ function ActivityRow({ activity }: { activity: Activity }) {
       <time>{activity.date}</time>
       <span className={`course-badge ${activity.tone}`}>{activity.course}</span>
       <div className="weight">
-        <strong>{activity.weight ?? "Sin peso"}</strong>
-        <small>{activity.weight ? "nota final" : "en la nota"}</small>
+        <strong>{activity.weight ?? (activity.graded ? "—" : "Sin peso")}</strong>
+        <small>{activity.graded ? "nota final" : "en la nota"}</small>
       </div>
       <button className="outline-button small" type="button">
         Ver actividad
@@ -67,8 +69,10 @@ function ActivityRow({ activity }: { activity: Activity }) {
   )
 }
 
-export default function ActividadesRuben({ actividades, onAgregar }: { actividades: Actividad[]; onAgregar: () => void }) {
+export default function ActividadesRuben({ actividades, onAgregar, resaltado }: { actividades: Actividad[]; onAgregar: () => void; resaltado: string | null }) {
   const n = sinFechaOficial(actividades).length
+  const activityGroups = agrupar(actividades)
+  const totalPendientes = activityGroups.reduce((count, g) => count + g.activities.length, 0)
   const [filter, setFilter] = useState<ActivityFilter>("all")
   const [course, setCourse] = useState("Todos los cursos")
   const groups =
@@ -200,7 +204,7 @@ export default function ActividadesRuben({ actividades, onAgregar }: { actividad
                     course === "Todos los cursos" || item.course === course,
                 )
                 .map((activity) => (
-                  <ActivityRow activity={activity} key={activity.title} />
+                  <ActivityRow activity={activity} key={activity.id} resaltada={activity.id === resaltado} />
                 ))}
             </section>
           ))}

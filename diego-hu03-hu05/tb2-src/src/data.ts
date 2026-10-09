@@ -1,4 +1,4 @@
-import { backend, type CursoBackend } from "@/backend";
+import { backend, type CursoBackend, type PendienteBackend } from "@/backend";
 
 export type Curso = CursoBackend;
 
@@ -106,14 +106,25 @@ export const HU04_MODULO_A_FIN = backend.periodo.fin;
 
 export type Hu01Curso = { nombre: string; tono: Curso["tono"] };
 
-export type Hu01Actividad = { plazo: string; urgente: boolean; fecha: string; titulo: string; curso: Hu01Curso; peso: string | null };
+export type Hu01Actividad = { id: string; plazo: string; urgente: boolean; fecha: string; titulo: string; curso: Hu01Curso; peso: string | null; calificada: boolean };
+
+// Pendiente del módulo con fecha oficial: los del backend y los que el alumno marca como Oficial.
+export type Pendiente = PendienteBackend & { id: string; calificada: boolean };
+
+export function pendientesDelModulo(actividades: Actividad[]): Pendiente[] {
+  const delCurso = backend.pendientes.map((p) => ({ ...p, id: `${p.cursoId}-${p.titulo}`, calificada: p.peso != null }));
+  const oficiales = actividades
+    .filter((a) => a.fechaOficial != null)
+    .map((a) => ({ id: a.id, cursoId: a.cursoId, titulo: a.nombre, vence: a.fechaOficial as Date, peso: a.peso, publicado: HOY, calificada: a.calificada }));
+  return [...delCurso, ...oficiales].sort((a, b) => a.vence.getTime() - b.vence.getTime());
+}
 
 const DIAS_LARGOS = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 const MESES_LARGOS = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
 const diasEntre = (a: Date, b: Date) => Math.round((soloDia(b).getTime() - soloDia(a).getTime()) / DIA_MS);
 
 // Pendientes agrupados como en la pantalla de Giancarlos: Hoy, Esta semana (hasta el domingo) y Próximas semanas.
-export const HU01_GRUPOS: { titulo: string; rango: string; actividades: Hu01Actividad[] }[] = (() => {
+export function gruposPendientes(actividades: Actividad[]): { titulo: string; rango: string; actividades: Hu01Actividad[] }[] {
   const hoy = soloDia(HOY);
   const domingo = new Date(hoy);
   domingo.setDate(hoy.getDate() + ((7 - hoy.getDay()) % 7));
@@ -122,21 +133,23 @@ export const HU01_GRUPOS: { titulo: string; rango: string; actividades: Hu01Acti
   const lunes = new Date(domingo);
   lunes.setDate(domingo.getDate() + 1);
 
-  const fila = (p: (typeof backend.pendientes)[number]): Hu01Actividad => {
+  const fila = (p: Pendiente): Hu01Actividad => {
     const curso = cursoPorId(p.cursoId);
     const dias = diasEntre(HOY, p.vence);
     return {
+      id: p.id,
       plazo: dias === 0 ? `Vence hoy a las ${dos(p.vence.getHours())}:${dos(p.vence.getMinutes())}` : dias === 1 ? "Vence mañana" : `Vence en ${dias} días`,
       urgente: dias === 0,
       fecha: `${p.vence.getDate()} ${MESES[p.vence.getMonth()]} · ${dos(p.vence.getHours())}:${dos(p.vence.getMinutes())}`,
       titulo: p.titulo,
       curso: { nombre: curso.nombre, tono: curso.tono },
       peso: p.peso != null ? `${p.peso}%` : null,
+      calificada: p.calificada,
     };
   };
-  const pendientes = [...backend.pendientes].sort((a, b) => a.vence.getTime() - b.vence.getTime());
+  const pendientes = pendientesDelModulo(actividades);
   const deHoy = pendientes.filter((p) => diasEntre(HOY, p.vence) === 0);
-  const deSemana = pendientes.filter((p) => diasEntre(HOY, p.vence) > 0 && p.vence <= new Date(domingo.getTime() + DIA_MS - 1));
+  const deSemana = pendientes.filter((p) => diasEntre(HOY, p.vence) > 0 && soloDia(p.vence) <= domingo);
   const proximas = pendientes.filter((p) => soloDia(p.vence) > domingo);
   const delMes = (d: Date) => `${d.getDate()} de ${MESES_LARGOS[d.getMonth()]}`;
   const rangoSemana =
@@ -148,4 +161,4 @@ export const HU01_GRUPOS: { titulo: string; rango: string; actividades: Hu01Acti
     { titulo: "Esta semana", rango: rangoSemana, actividades: deSemana.map(fila) },
     { titulo: "Próximas semanas", rango: `Desde el ${delMes(lunes)}`, actividades: proximas.map(fila) },
   ];
-})();
+}
