@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* La app compilada vive en ruben/: Tailwind no debe leerla al buscar clases. */
+@source not "../ruben";
 
 @font-face {
   font-family: "Inter:Bold";

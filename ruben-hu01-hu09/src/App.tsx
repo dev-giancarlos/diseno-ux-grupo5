@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-const assets = "/assets"
+const assets = `${import.meta.env.BASE_URL}assets`
 
 const icons = {
   logo: `${assets}/6313b.svg`,

@@ -1,0 +1,117 @@
+import { useState } from "react";
+import { Boton, ChipFiltroDeCurso, EstadoVacio, Input, ItemLista, Lista, Pagina, Stack, Texto } from "@/components/ui";
+import FilaActividad from "@/components/actividades/FilaActividad";
+import { cursos, esEvaluacion, ordenar, sinFechaOficial, type Actividad } from "@/data";
+import { hrefSinFecha } from "@/rutas";
+import Encabezado from "./Encabezado";
+
+type Props = {
+  actividades: Actividad[];
+  cursoFiltro: string | null;
+  soloEvaluaciones: boolean;
+  onAccion: (a: Actividad) => void;
+  onAgregar: () => void;
+};
+
+export default function SinFecha({ actividades, cursoFiltro, soloEvaluaciones, onAccion, onAgregar }: Props) {
+  const [busqueda, setBusqueda] = useState("");
+  const todas = sinFechaOficial(actividades);
+  const curso = cursos.find((c) => c.id === cursoFiltro) ?? null;
+  const q = busqueda.trim().toLowerCase();
+  const visibles = ordenar(
+    todas.filter((a) => (!curso || a.cursoId === curso.id) && (!soloEvaluaciones || esEvaluacion(a)) && (!q || a.nombre.toLowerCase().includes(q))),
+  );
+  // Cada filtro se quita por separado; cambiar el curso no quita "Solo evaluaciones".
+  const irA = (id: string | null, solo = soloEvaluaciones) => (window.location.hash = hrefSinFecha(id, solo));
+  const quitarFiltro = () => {
+    setBusqueda("");
+    irA(null, false);
+  };
+
+  return (
+    <Pagina>
+      <Encabezado
+        titulo="Sin fecha oficial"
+        subtitulo="Actividades de tus cursos que aún no tienen fecha oficial. Agrega la fecha que anunció el docente o una estimada, y márcala como Oficial cuando la confirme."
+        miga={
+          <nav aria-label="Ruta" className="flex items-center gap-2 text-[13px] text-muted-foreground">
+            <a href="#/actividades" className="rounded-[6px] font-semibold text-accent underline foco-anillo">
+              Actividades
+            </a>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page" className="font-semibold text-foreground">
+              Sin fecha oficial
+            </span>
+          </nav>
+        }
+      />
+
+      <Stack direccion="fila" gap={12} envolver alinear="center" justificar="between">
+        <Stack direccion="fila" gap={12} envolver alinear="center">
+        <div className="w-full sm:w-[360px]">
+          <Input id="buscar" tipo="busqueda" compacto valor={busqueda} onCambio={setBusqueda} marcador="Buscar actividad" etiquetaAria="Buscar actividad" />
+        </div>
+        <div className="w-full sm:w-[220px]">
+          <Input
+            id="filtro-curso"
+            tipo="selector"
+            compacto
+            valor={curso?.id ?? ""}
+            marcador="Todos los cursos"
+            opciones={cursos.map((c) => ({ valor: c.id, etiqueta: c.nombre }))}
+            onCambio={(id) => irA(id || null)}
+            etiquetaAria="Filtrar por curso"
+          />
+        </div>
+        </Stack>
+        <Boton variant="soft" anchoMovil onClick={onAgregar}>
+          + Agregar actividad
+        </Boton>
+      </Stack>
+
+      {(curso || soloEvaluaciones) && (
+        <div className="flex flex-wrap gap-2">
+          {soloEvaluaciones && <ChipFiltroDeCurso etiqueta="Solo evaluaciones" onQuitar={() => irA(curso?.id ?? null, false)} />}
+          {curso && <ChipFiltroDeCurso etiqueta={curso.nombre} onQuitar={() => irA(null)} />}
+        </div>
+      )}
+      <Texto variante="meta">
+        {soloEvaluaciones
+          ? visibles.length === 1 ? "1 evaluación" : `${visibles.length} evaluaciones`
+          : visibles.length === 1 ? "1 actividad" : `${visibles.length} actividades`}
+      </Texto>
+
+      {visibles.length > 0 ? (
+        <Lista>
+          {visibles.map((a) => (
+            <ItemLista key={a.id}>
+              <FilaActividad actividad={a} onAccion={onAccion} />
+            </ItemLista>
+          ))}
+        </Lista>
+      ) : todas.length === 0 ? (
+        <EstadoVacio
+          icono="calendar-check"
+          titulo="Todo tiene fecha oficial por ahora"
+          texto="Si anunciaron una actividad en clase y no aparece en tu curso, puedes agregarla."
+          accion={
+            <Boton variant="soft" onClick={onAgregar}>
+              + Agregar actividad
+            </Boton>
+          }
+        />
+      ) : (
+        <EstadoVacio
+          icono="filter-x"
+          titulo="El filtro no deja ninguna actividad a la vista"
+          texto="Hay actividades sin fecha oficial en otros cursos. Quita el filtro para verlas."
+          accion={
+            <Boton variant="soft" iconoInicio="filter-x" onClick={quitarFiltro}>
+              Quitar filtro
+            </Boton>
+          }
+        />
+      )}
+    </Pagina>
+  );
+}
