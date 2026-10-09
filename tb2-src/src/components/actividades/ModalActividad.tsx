@@ -1,0 +1,232 @@
+import { useEffect, useRef, useState } from "react";
+import { Alerta, Campo, Input, Modal, ModalPieAcciones, Stack } from "@/components/ui";
+import { combinarFecha, cursos, semanas, tieneFechaPropia, tipos, type Actividad } from "@/data";
+
+export type ModoModal = { modo: "crear" } | { modo: "completar"; actividad: Actividad };
+
+type Props = {
+  estado: ModoModal | null;
+  onCerrar: () => void;
+  onGuardar: (a: Actividad) => void;
+};
+
+type Ref = HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement;
+const FUENTES = { anunciada: "El docente la dijo en clase", estimada: "Es una estimación mía" } as const;
+const dos = (n: number) => String(n).padStart(2, "0");
+const aISO = (d: Date) => `${d.getFullYear()}-${dos(d.getMonth() + 1)}-${dos(d.getDate())}`;
+const quitarFuente = (nota: string) => nota.replace(/^Fuente: .*$/m, "").trim();
+
+function valoresIniciales(e: ModoModal | null) {
+  const a = e?.modo === "completar" ? e.actividad : null;
+  return {
+    curso: a?.cursoId ?? "",
+    nombre: a?.nombre ?? "",
+    precision: a?.semanaAlumno != null ? "semana" : "dia",
+    fecha: a?.fechaAlumno ? aISO(a.fechaAlumno) : "",
+    hora: a?.horaAlumno ?? "",
+    semana: a?.semanaAlumno != null ? String(a.semanaAlumno) : "",
+    tipo: a?.tipo ?? "",
+    fuente: (a?.fuenteFecha ?? "anunciada") as keyof typeof FUENTES,
+    nota: a ? quitarFuente(a.nota) : "",
+  };
+}
+
+export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
+  const [v, setV] = useState(() => valoresIniciales(estado));
+  const [errores, setErrores] = useState<Record<string, string>>({});
+  const refs = { nombre: useRef<Ref>(null), fecha: useRef<Ref>(null), semana: useRef<Ref>(null) };
+
+  useEffect(() => {
+    setV(valoresIniciales(estado));
+    setErrores({});
+  }, [estado]);
+
+  const completar = estado?.modo === "completar" ? estado.actividad : null;
+  const delDocente = completar?.origen === "docente";
+  const conSemana = v.precision === "semana";
+  const set = (k: keyof typeof v) => (valor: string) => setV((p) => ({ ...p, [k]: valor }));
+
+  const titulo = !completar ? "Agregar actividad" : tieneFechaPropia(completar) ? "Editar fecha" : "Agregar fecha";
+  const descripcionBloqueo = delDocente ? "Viene de tu curso, no se puede editar" : "La registraste tú; aquí solo cambias la fecha";
+
+  function guardar() {
+    const e: Record<string, string> = {};
+    if (!completar && !v.nombre.trim()) e.nombre = "Escribe el nombre";
+    const fecha = combinarFecha(v.fecha, v.hora);
+    if (conSemana) {
+      if (!v.semana) e.semana = "Elige una semana del ciclo";
+    } else if (!fecha || fecha.getTime() <= Date.now()) {
+      e.fecha = "Elige una fecha futura";
+    }
+    setErrores(e);
+    const primero = (["nombre", "fecha", "semana"] as const).find((k) => e[k]);
+    if (primero) {
+      requestAnimationFrame(() => refs[primero].current?.focus());
+      return;
+    }
+
+    const notaBase = v.nota.trim();
+    const nota = delDocente ? [`Fuente: ${FUENTES[v.fuente]}`, notaBase].filter(Boolean).join("\n") : notaBase;
+    const fechaDatos = {
+      fechaAlumno: conSemana ? null : fecha,
+      horaAlumno: conSemana ? null : v.hora || null,
+      semanaAlumno: conSemana ? Number(v.semana) : null,
+      fuenteFecha: delDocente ? v.fuente : null,
+      tipo: v.tipo,
+      nota,
+    };
+    onGuardar(
+      completar
+        ? { ...completar, ...fechaDatos }
+        : {
+            id: `alumno-${Date.now()}`,
+            cursoId: v.curso || cursos[0].id,
+            nombre: v.nombre.trim(),
+            origen: "alumno",
+            semanaOficial: null,
+            fechaOficial: null,
+            ...fechaDatos,
+          },
+    );
+  }
+
+  const nErrores = Object.keys(errores).length;
+  const opcionesCurso = cursos.map((c) => ({ valor: c.id, etiqueta: `${c.nombre} · NRC ${c.nrc}` }));
+
+  return (
+    <Modal
+      abierto={estado != null}
+      titulo={titulo}
+      subtitulo={
+        completar
+          ? "Esta actividad ya está en tu lista. Solo falta la fecha."
+          : "Registra una actividad que anunciaron en clase y no aparece en tu curso."
+      }
+      onCerrar={onCerrar}
+      pie={
+        <ModalPieAcciones
+          etiquetaPrimaria={completar ? "Guardar fecha" : "Agregar actividad"}
+          onCancelar={onCerrar}
+          onConfirmar={guardar}
+        />
+      }
+    >
+      <form
+        noValidate
+        onSubmit={(ev) => {
+          ev.preventDefault();
+          guardar();
+        }}
+        className="flex flex-col gap-5"
+      >
+        {nErrores > 0 && <Alerta tono="error" texto={nErrores === 1 ? "Falta 1 dato" : `Faltan ${nErrores} datos`} />}
+
+        <Campo id="m-curso" etiqueta="Curso" descripcion={completar ? descripcionBloqueo : undefined}>
+          <Input
+            id="m-curso"
+            tipo="selector"
+            estado={completar ? "bloqueado" : "normal"}
+            valor={completar ? `${completar.cursoId}` : v.curso || cursos[0].id}
+            opciones={opcionesCurso}
+            onCambio={set("curso")}
+            descripcionId={completar ? "m-curso-desc" : undefined}
+          />
+        </Campo>
+
+        <Campo id="m-nombre" etiqueta="Nombre de la actividad" error={errores.nombre}>
+          <Input
+            id="m-nombre"
+            estado={completar ? "bloqueado" : errores.nombre ? "error" : "normal"}
+            valor={v.nombre}
+            marcador="Escribe el nombre de la actividad"
+            onCambio={set("nombre")}
+            descripcionId={errores.nombre ? "m-nombre-error" : undefined}
+            refEntrada={refs.nombre}
+          />
+        </Campo>
+
+        <Campo id="m-precision" etiqueta="¿Sabes el día exacto?" descripcion='Si solo te dijeron la semana, elige "Solo sé la semana"'>
+          <Input
+            id="m-precision"
+            tipo="selector"
+            valor={v.precision}
+            opciones={[
+              { valor: "dia", etiqueta: "Sí, sé el día" },
+              { valor: "semana", etiqueta: "Solo sé la semana" },
+            ]}
+            onCambio={(p) => {
+              set("precision")(p);
+              setErrores({});
+            }}
+            descripcionId="m-precision-desc"
+          />
+        </Campo>
+
+        <div className="flex flex-wrap items-start gap-4">
+          {conSemana ? (
+            <Campo flexible id="m-semana" etiqueta="Semana" error={errores.semana}>
+              <Input
+                id="m-semana"
+                tipo="selector"
+                estado={errores.semana ? "error" : "normal"}
+                valor={v.semana}
+                marcador="Elige"
+                opciones={semanas.map((s) => ({ valor: String(s), etiqueta: `Semana ${s}` }))}
+                onCambio={set("semana")}
+                descripcionId={errores.semana ? "m-semana-error" : undefined}
+                refEntrada={refs.semana}
+              />
+            </Campo>
+          ) : (
+            <>
+              <Campo flexible id="m-fecha" etiqueta="Fecha" error={errores.fecha}>
+                <Input
+                  id="m-fecha"
+                  tipo="fecha"
+                  estado={errores.fecha ? "error" : "normal"}
+                  valor={v.fecha}
+                  onCambio={set("fecha")}
+                  descripcionId={errores.fecha ? "m-fecha-error" : undefined}
+                  refEntrada={refs.fecha}
+                />
+              </Campo>
+              <Campo flexible id="m-hora" etiqueta="Hora" descripcion="Si la mencionaron">
+                <Input id="m-hora" tipo="hora" valor={v.hora} onCambio={set("hora")} descripcionId="m-hora-desc" />
+              </Campo>
+            </>
+          )}
+          <Campo flexible id="m-tipo" etiqueta="Tipo">
+            <Input
+              id="m-tipo"
+              tipo="selector"
+              valor={v.tipo}
+              marcador="Elige"
+              opciones={tipos.map((t) => ({ valor: t, etiqueta: t }))}
+              onCambio={set("tipo")}
+            />
+          </Campo>
+        </div>
+
+        {delDocente && (
+          <Campo id="m-fuente" etiqueta="De dónde sale esta fecha" descripcion='Se guarda en la nota. La lista la marca como "Fecha anotada por ti"'>
+            <Input
+              id="m-fuente"
+              tipo="selector"
+              valor={v.fuente}
+              opciones={Object.entries(FUENTES).map(([valor, etiqueta]) => ({ valor, etiqueta }))}
+              onCambio={set("fuente")}
+              descripcionId="m-fuente-desc"
+            />
+          </Campo>
+        )}
+
+        <Stack>
+          <Campo id="m-nota" etiqueta="Nota" descripcion="Dónde lo anunciaron">
+            <Input id="m-nota" tipo="area" valor={v.nota} onCambio={set("nota")} descripcionId="m-nota-desc" />
+          </Campo>
+        </Stack>
+        <button type="submit" hidden />
+      </form>
+    </Modal>
+  );
+}
