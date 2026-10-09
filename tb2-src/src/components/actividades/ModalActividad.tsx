@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Alerta, Campo, Input, Modal, ModalPieAcciones, Stack } from "@/components/ui";
 import { combinarFecha, cursos, semanas, tieneFechaPropia, tipos, type Actividad } from "@/data";
 
-export type ModoModal = { modo: "crear" } | { modo: "completar"; actividad: Actividad };
+// "oficial": la alumna marca la fecha oficial que anunció el docente; la actividad sale de Sin fecha oficial.
+export type ModoModal = { modo: "crear" } | { modo: "completar" | "oficial"; actividad: Actividad };
 
 type Props = {
   estado: ModoModal | null;
@@ -17,11 +18,11 @@ const aISO = (d: Date) => `${d.getFullYear()}-${dos(d.getMonth() + 1)}-${dos(d.g
 const quitarFuente = (nota: string) => nota.replace(/^Fuente: .*$/m, "").trim();
 
 function valoresIniciales(e: ModoModal | null) {
-  const a = e?.modo === "completar" ? e.actividad : null;
+  const a = e && e.modo !== "crear" ? e.actividad : null;
   return {
     curso: a?.cursoId ?? "",
     nombre: a?.nombre ?? "",
-    precision: a?.semanaAlumno != null ? "semana" : "dia",
+    precision: e?.modo !== "oficial" && a?.semanaAlumno != null ? "semana" : "dia",
     fecha: a?.fechaAlumno ? aISO(a.fechaAlumno) : "",
     hora: a?.horaAlumno ?? "",
     semana: a?.semanaAlumno != null ? String(a.semanaAlumno) : "",
@@ -41,12 +42,13 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
     setErrores({});
   }, [estado]);
 
-  const completar = estado?.modo === "completar" ? estado.actividad : null;
+  const completar = estado && estado.modo !== "crear" ? estado.actividad : null;
+  const oficial = estado?.modo === "oficial";
   const delDocente = completar?.origen === "docente";
-  const conSemana = v.precision === "semana";
+  const conSemana = !oficial && v.precision === "semana";
   const set = (k: keyof typeof v) => (valor: string) => setV((p) => ({ ...p, [k]: valor }));
 
-  const titulo = !completar ? "Agregar actividad" : tieneFechaPropia(completar) ? "Editar fecha" : "Agregar fecha";
+  const titulo = oficial ? "Marcar fecha oficial" : !completar ? "Agregar actividad" : tieneFechaPropia(completar) ? "Editar fecha" : "Agregar fecha";
   const descripcionBloqueo = delDocente ? "Viene de tu curso, no se puede editar" : "La registraste tú; aquí solo cambias la fecha";
 
   function guardar() {
@@ -62,6 +64,10 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
     const primero = (["nombre", "fecha", "semana"] as const).find((k) => e[k]);
     if (primero) {
       requestAnimationFrame(() => refs[primero].current?.focus());
+      return;
+    }
+    if (oficial && completar) {
+      onGuardar({ ...completar, fechaOficial: fecha });
       return;
     }
 
@@ -98,14 +104,16 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
       abierto={estado != null}
       titulo={titulo}
       subtitulo={
-        completar
+        oficial
+          ? "Escribe la fecha que anunció el docente. La actividad sale de Sin fecha oficial."
+          : completar
           ? "Esta actividad ya está en tu lista. Solo falta la fecha."
           : "Registra una actividad que anunciaron en clase y no aparece en tu curso."
       }
       onCerrar={onCerrar}
       pie={
         <ModalPieAcciones
-          etiquetaPrimaria={completar ? "Guardar fecha" : "Agregar actividad"}
+          etiquetaPrimaria={oficial ? "Guardar fecha oficial" : completar ? "Guardar fecha" : "Agregar actividad"}
           onCancelar={onCerrar}
           onConfirmar={guardar}
         />
@@ -145,6 +153,7 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
           />
         </Campo>
 
+        {!oficial && (
         <Campo id="m-precision" etiqueta="¿Sabes el día exacto?" descripcion='Si solo te dijeron la semana, elige "Solo sé la semana"'>
           <Input
             id="m-precision"
@@ -161,6 +170,7 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
             descripcionId="m-precision-desc"
           />
         </Campo>
+        )}
 
         <div className="flex flex-wrap items-start gap-4">
           {conSemana ? (
@@ -195,6 +205,7 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
               </Campo>
             </>
           )}
+          {!oficial && (
           <Campo flexible id="m-tipo" etiqueta="Tipo">
             <Input
               id="m-tipo"
@@ -205,9 +216,10 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
               onCambio={set("tipo")}
             />
           </Campo>
+          )}
         </div>
 
-        {delDocente && (
+        {delDocente && !oficial && (
           <Campo id="m-fuente" etiqueta="De dónde sale esta fecha" descripcion='Se guarda en la nota. La lista la marca como "Fecha anotada por ti"'>
             <Input
               id="m-fuente"
@@ -220,11 +232,13 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
           </Campo>
         )}
 
+        {!oficial && (
         <Stack>
           <Campo id="m-nota" etiqueta="Nota" descripcion="Dónde lo anunciaron">
             <Input id="m-nota" tipo="area" valor={v.nota} onCambio={set("nota")} descripcionId="m-nota-desc" />
           </Campo>
         </Stack>
+        )}
         <button type="submit" hidden />
       </form>
     </Modal>

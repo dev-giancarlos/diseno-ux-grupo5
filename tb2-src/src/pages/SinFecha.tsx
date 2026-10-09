@@ -10,10 +10,10 @@ type Props = {
   cursoFiltro: string | null;
   onAccion: (a: Actividad) => void;
   onAgregar: () => void;
-  onPublicar: (a: Actividad) => void;
+  onOficial: (a: Actividad) => void;
 };
 
-export default function SinFecha({ actividades, cursoFiltro, onAccion, onAgregar, onPublicar }: Props) {
+export default function SinFecha({ actividades, cursoFiltro, onAccion, onAgregar, onOficial }: Props) {
   const [busqueda, setBusqueda] = useState("");
   const todas = sinFechaOficial(actividades);
   const curso = cursos.find((c) => c.id === cursoFiltro) ?? null;
@@ -81,7 +81,7 @@ export default function SinFecha({ actividades, cursoFiltro, onAccion, onAgregar
         <Lista>
           {visibles.map((a) => (
             <ItemLista key={a.id}>
-              <FilaActividad actividad={a} onAccion={onAccion} onPublicar={onPublicar} />
+              <FilaActividad actividad={a} onAccion={onAccion} onOficial={onOficial} />
             </ItemLista>
           ))}
         </Lista>

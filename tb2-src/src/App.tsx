@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Shell, Toast } from "@/components/ui";
 import ModalActividad, { type ModoModal } from "@/components/actividades/ModalActividad";
-import { actividadesIniciales, fechaPublicada, formatoFecha, type Actividad } from "@/data";
+import { actividadesIniciales, formatoFecha, type Actividad } from "@/data";
 import { leerHash, menu } from "@/rutas";
 import Actividades from "@/pages/Actividades";
 import Cursos, { Curso } from "@/pages/Cursos";
@@ -30,18 +30,12 @@ export default function App() {
 
   const abrirCrear = () => setModal({ modo: "crear" });
   const abrirCompletar = (actividad: Actividad) => setModal({ modo: "completar", actividad });
+  const abrirOficial = (actividad: Actividad) => setModal({ modo: "oficial", actividad });
 
   function guardar(a: Actividad) {
     setActividades((lista) => (lista.some((x) => x.id === a.id) ? lista.map((x) => (x.id === a.id ? a : x)) : [...lista, a]));
     setModal(null);
-    mostrarToast("Actividad agregada a tus pendientes");
-  }
-
-  // Demo: el curso publica la fecha oficial; la actividad sale de Sin fecha oficial.
-  function publicar(a: Actividad) {
-    const fecha = fechaPublicada(a);
-    setActividades((lista) => lista.map((x) => (x.id === a.id ? { ...x, fechaOficial: fecha } : x)));
-    mostrarToast(`El curso publicó la fecha de ${a.nombre}: ${formatoFecha(fecha)}`);
+    mostrarToast(a.fechaOficial ? `${a.nombre} ya tiene fecha oficial: ${formatoFecha(a.fechaOficial)}` : "Actividad agregada a tus pendientes");
   }
 
   function mostrarToast(texto: string) {
@@ -59,7 +53,7 @@ export default function App() {
   else if (seccion === "actividades") pagina = <Actividades actividades={actividades} onAgregar={abrirCrear} />;
   else if (seccion === "evaluaciones" && sub === "sin-fecha")
     pagina = (
-      <SinFecha actividades={actividades} cursoFiltro={ubicacion.query.get("curso")} onAccion={abrirCompletar} onAgregar={abrirCrear} onPublicar={publicar} />
+      <SinFecha actividades={actividades} cursoFiltro={ubicacion.query.get("curso")} onAccion={abrirCompletar} onAgregar={abrirCrear} onOficial={abrirOficial} />
     );
   else if (seccion === "evaluaciones") pagina = <Evaluaciones actividades={actividades} />;
   else pagina = <Marcador titulo={item?.etiqueta ?? "Página no encontrada"} />;
