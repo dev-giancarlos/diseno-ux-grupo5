@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Alerta, Campo, Input, Modal, ModalPieAcciones, Stack } from "@/components/ui";
-import { combinarFecha, cursos, semanas, tieneFechaPropia, tipos, type Actividad } from "@/data";
+import { Alerta, Campo, Input, Interruptor, Modal, ModalPieAcciones, Stack } from "@/components/ui";
+import { combinarFecha, cursos, semanas, tieneFechaPropia, type Actividad } from "@/data";
 
 // "oficial": la alumna confirma la fecha oficial que anunció el docente; la actividad sale de Sin fecha oficial.
 export type ModoModal = { modo: "crear" } | { modo: "completar" | "oficial"; actividad: Actividad };
@@ -26,7 +26,8 @@ function valoresIniciales(e: ModoModal | null) {
     fecha: a?.fechaAlumno ? aISO(a.fechaAlumno) : "",
     hora: a?.horaAlumno ?? "",
     semana: a?.semanaAlumno != null ? String(a.semanaAlumno) : "",
-    tipo: a?.tipo ?? "",
+    calificada: a?.calificada ?? false,
+    peso: a?.peso != null ? String(a.peso) : "",
     fuente: (a?.fuenteFecha ?? "anunciada") as keyof typeof FUENTES,
     nota: a ? quitarFuente(a.nota) : "",
   };
@@ -35,7 +36,7 @@ function valoresIniciales(e: ModoModal | null) {
 export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
   const [v, setV] = useState(() => valoresIniciales(estado));
   const [errores, setErrores] = useState<Record<string, string>>({});
-  const refs = { nombre: useRef<Ref>(null), fecha: useRef<Ref>(null), semana: useRef<Ref>(null) };
+  const refs = { nombre: useRef<Ref>(null), fecha: useRef<Ref>(null), semana: useRef<Ref>(null), peso: useRef<Ref>(null) };
 
   useEffect(() => {
     setV(valoresIniciales(estado));
@@ -46,7 +47,7 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
   const oficial = estado?.modo === "oficial";
   const delDocente = completar?.origen === "docente";
   const conSemana = !oficial && v.precision === "semana";
-  const set = (k: keyof typeof v) => (valor: string) => setV((p) => ({ ...p, [k]: valor }));
+  const set = (k: Exclude<keyof typeof v, "calificada">) => (valor: string) => setV((p) => ({ ...p, [k]: valor }));
 
   const titulo = oficial ? "Confirmar fecha" : !completar ? "Agregar actividad" : tieneFechaPropia(completar) ? "Editar fecha" : "Agregar fecha";
   const descripcionBloqueo = delDocente ? "Viene de tu curso, no se puede editar" : "La registraste tú; aquí solo cambias la fecha";
@@ -60,8 +61,10 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
     } else if (!fecha || fecha.getTime() <= Date.now()) {
       e.fecha = "Elige una fecha futura";
     }
+    const peso = Number(v.peso);
+    if (!oficial && v.calificada && v.peso.trim() && !(peso > 0 && peso <= 100)) e.peso = "Escribe un porcentaje entre 1 y 100";
     setErrores(e);
-    const primero = (["nombre", "fecha", "semana"] as const).find((k) => e[k]);
+    const primero = (["nombre", "fecha", "semana", "peso"] as const).find((k) => e[k]);
     if (primero) {
       requestAnimationFrame(() => refs[primero].current?.focus());
       return;
@@ -78,7 +81,8 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
       horaAlumno: conSemana ? null : v.hora || null,
       semanaAlumno: conSemana ? Number(v.semana) : null,
       fuenteFecha: delDocente ? v.fuente : null,
-      tipo: v.tipo,
+      calificada: v.calificada,
+      peso: v.calificada && v.peso.trim() ? peso : null,
       nota,
     };
     onGuardar(
@@ -127,7 +131,7 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
         }}
         className="flex flex-col gap-5"
       >
-        {nErrores > 0 && <Alerta tono="error" texto={nErrores === 1 ? "Falta 1 dato" : `Faltan ${nErrores} datos`} />}
+        {nErrores > 0 && <Alerta tono="error" texto={nErrores === 1 ? "Revisa 1 dato" : `Revisa ${nErrores} datos`} />}
 
         <Campo id="m-curso" etiqueta="Curso" descripcion={completar ? descripcionBloqueo : undefined}>
           <Input
@@ -205,19 +209,34 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
               </Campo>
             </>
           )}
-          {!oficial && (
-          <Campo flexible id="m-tipo" etiqueta="Tipo">
-            <Input
-              id="m-tipo"
-              tipo="selector"
-              valor={v.tipo}
-              marcador="Elige"
-              opciones={tipos.map((t) => ({ valor: t, etiqueta: t }))}
-              onCambio={set("tipo")}
-            />
-          </Campo>
-          )}
         </div>
+
+        {!oficial && (
+          <Stack gap={12}>
+            <Interruptor
+              id="m-calificada"
+              etiqueta="Es calificada"
+              activo={v.calificada}
+              onCambio={(activo) => setV((p) => ({ ...p, calificada: activo }))}
+            />
+            {v.calificada && (
+              <div className="w-full sm:w-[220px]">
+                <Campo id="m-peso" etiqueta="Peso en la nota final (%)" descripcion="Opcional, si lo sabes" error={errores.peso}>
+                  <Input
+                    id="m-peso"
+                    tipo="numero"
+                    estado={errores.peso ? "error" : "normal"}
+                    valor={v.peso}
+                    marcador="Ej. 15"
+                    onCambio={set("peso")}
+                    descripcionId={errores.peso ? "m-peso-error" : "m-peso-desc"}
+                    refEntrada={refs.peso}
+                  />
+                </Campo>
+              </div>
+            )}
+          </Stack>
+        )}
 
         {delDocente && !oficial && (
           <Campo id="m-fuente" etiqueta="De dónde sale esta fecha" descripcion='Se guarda en la nota. La lista la marca como "Fecha anotada por ti"'>

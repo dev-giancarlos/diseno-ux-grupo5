@@ -6,7 +6,7 @@ type Opcion = { valor: string; etiqueta: string };
 
 type InputProps = {
   id: string;
-  tipo?: "texto" | "selector" | "area" | "fecha" | "hora" | "busqueda";
+  tipo?: "texto" | "selector" | "area" | "fecha" | "hora" | "busqueda" | "numero";
   estado?: "normal" | "bloqueado" | "error";
   valor: string;
   onCambio?: (valor: string) => void;
@@ -85,7 +85,7 @@ export default function Input({
     );
   }
 
-  const tipoNativo = tipo === "fecha" ? "date" : tipo === "hora" ? "time" : tipo === "busqueda" ? "search" : "text";
+  const tipoNativo = tipo === "fecha" ? "date" : tipo === "hora" ? "time" : tipo === "busqueda" ? "search" : tipo === "numero" ? "number" : "text";
   return (
     <input
       {...comunes}

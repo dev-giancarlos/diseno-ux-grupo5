@@ -9,3 +9,4 @@ export { default as Input, Campo, CampoTexto } from "./Campos";
 export { default as Modal, ModalPieAcciones } from "./Modal";
 export { default as Shell } from "./Shell";
 export { default as EstadoVacio } from "./EstadoVacio";
+export { default as Interruptor } from "./Interruptor";

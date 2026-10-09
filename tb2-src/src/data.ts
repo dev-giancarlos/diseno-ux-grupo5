@@ -13,7 +13,8 @@ export type Actividad = {
   horaAlumno: string | null;
   semanaAlumno: number | null;
   fuenteFecha: "estimada" | "anunciada" | null;
-  tipo: string;
+  calificada: boolean;
+  peso: number | null; // % de la nota final, si se conoce
   nota: string;
 };
 
@@ -29,7 +30,6 @@ export const cursos: Curso[] = [
   { id: "fisica1", nombre: "Física 1", nrc: "1844" },
 ];
 
-export const tipos = ["Tarea", "Control", "Examen", "Evidencia", "Foro", "Prerrequisito"];
 export const semanas = Array.from({ length: 16 }, (_, i) => i + 1);
 
 export const actividadesIniciales: Actividad[] = [
@@ -44,7 +44,8 @@ export const actividadesIniciales: Actividad[] = [
     horaAlumno: null,
     semanaAlumno: null,
     fuenteFecha: null,
-    tipo: "Examen",
+    calificada: true,
+    peso: null,
     nota: "",
   },
   {
@@ -58,7 +59,8 @@ export const actividadesIniciales: Actividad[] = [
     horaAlumno: null,
     semanaAlumno: null,
     fuenteFecha: null,
-    tipo: "Control",
+    calificada: true,
+    peso: null,
     nota: "",
   },
   {
@@ -72,7 +74,8 @@ export const actividadesIniciales: Actividad[] = [
     horaAlumno: null,
     semanaAlumno: null,
     fuenteFecha: null,
-    tipo: "Tarea",
+    calificada: true,
+    peso: null,
     nota: "",
   },
   {
@@ -86,7 +89,8 @@ export const actividadesIniciales: Actividad[] = [
     horaAlumno: "23:59",
     semanaAlumno: null,
     fuenteFecha: "estimada",
-    tipo: "Evidencia",
+    calificada: false,
+    peso: null,
     nota: "Fuente: Es una estimación mía",
   },
   {
@@ -100,7 +104,8 @@ export const actividadesIniciales: Actividad[] = [
     horaAlumno: null,
     semanaAlumno: 10,
     fuenteFecha: null,
-    tipo: "Foro",
+    calificada: false,
+    peso: null,
     nota: "",
   },
 ];
@@ -158,9 +163,8 @@ export function combinarFecha(fecha: string, hora: string): Date | null {
   return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), h, min);
 }
 
-// Evaluaciones: tipos que cuentan como evaluación (el resto son actividades sin nota).
-export const tiposEvaluacion = ["Examen", "Control", "Tarea"];
-export const esEvaluacion = (a: Actividad) => tiposEvaluacion.includes(a.tipo);
+// Evaluaciones: las actividades calificadas (las que suman a la nota final).
+export const esEvaluacion = (a: Actividad) => a.calificada;
 
 /* =========================================================
    Pantalla de Carmen (HU-04 · Evaluaciones por realizar)
