@@ -39,7 +39,11 @@ export default function App() {
     setActividades((lista) => (lista.some((x) => x.id === a.id) ? lista.map((x) => (x.id === a.id ? a : x)) : [...lista, a]));
     setModal(null);
     if (a.fechaOficial) {
-      mostrarToast(`${a.nombre} ya tiene fecha oficial: ${formatoFecha(a.fechaOficial)}. Salió de Sin fecha oficial`, {
+      const fecha = formatoFecha(a.fechaOficial);
+      const texto = creada
+        ? `${a.nombre} tiene fecha oficial: ${fecha}. No aparece en Sin fecha oficial`
+        : `${a.nombre} ya tiene fecha oficial: ${fecha}. Salió de Sin fecha oficial`;
+      mostrarToast(texto, {
         etiqueta: "Deshacer",
         onClick: () => {
           setActividades(anterior);

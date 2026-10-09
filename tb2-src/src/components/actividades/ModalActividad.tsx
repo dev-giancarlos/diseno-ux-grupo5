@@ -59,8 +59,7 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
   };
 
   const titulo = completar ? "Editar actividad" : "Agregar actividad";
-  // Al crear no se ofrece "Oficial": la actividad saldría de la única lista donde se ve.
-  const tipos: TipoFecha[] = completar ? ["oficial", "anunciada", "estimada"] : ["anunciada", "estimada"];
+  const tipos: TipoFecha[] = ["oficial", "anunciada", "estimada"];
 
   function guardar() {
     const e: Record<string, string> = {};
@@ -90,7 +89,8 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
       fechaAlumno: fecha,
       horaAlumno: v.dia && v.hora ? v.hora : null,
       semanaAlumno: v.dia ? null : v.semana,
-      fuenteFecha: v.tipoFecha as "anunciada" | "estimada",
+      // Una actividad creada como Oficial no se lista en Sin fecha oficial: su tipo de fecha propio no se muestra.
+      fuenteFecha: v.tipoFecha === "oficial" ? "anunciada" : v.tipoFecha,
     };
     onGuardar(
       completar
@@ -99,7 +99,7 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
             id: `alumno-${Date.now()}`,
             cursoId: v.curso || cursos[0].id,
             nombre: v.nombre.trim(),
-            fechaOficial: null,
+            fechaOficial: oficial ? fecha : null,
             ...fechaDatos,
           },
     );
@@ -167,16 +167,18 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
             valor={v.tipoFecha}
             onCambio={(t) => set("tipoFecha")(t as TipoFecha)}
           />
-          {completar && (
+          {(completar || oficial) && (
             <p
               className={`flex items-center gap-2 rounded-[6px] px-3 py-[9px] text-[12px] ${
                 oficial ? "bg-success-muted text-success-foreground" : "bg-background text-muted-foreground"
               }`}
             >
               <Icono nombre={oficial ? "success" : "info"} />
-              {oficial
-                ? `Al guardar, ${completar.nombre} sale de Sin fecha oficial.`
-                : "Sigue en Sin fecha oficial, con tu fecha a la vista."}
+              {!oficial
+                ? "Sigue en Sin fecha oficial, con tu fecha a la vista."
+                : completar
+                  ? `Al guardar, ${completar.nombre} sale de Sin fecha oficial.`
+                  : "Con fecha oficial, la actividad no aparece en Sin fecha oficial."}
             </p>
           )}
         </Stack>
