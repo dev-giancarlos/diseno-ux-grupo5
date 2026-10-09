@@ -3,4 +3,4 @@ Proyecto del Grupo 5 - Diseño y Tecnologías UX (UPC). Investigación de usuari
 
 ## Prototipos
 
-- [TB2 · Aula virtual (React)](https://dev-giancarlos.github.io/diseno-ux-grupo5/tb2/)
+- [TB2 · Aula virtual (React)](https://dev-giancarlos.github.io/diseno-ux-grupo5/diego-hu03-hu05/tb2/)
