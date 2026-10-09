@@ -1,5 +1,5 @@
 // Pantalla de Giancarlos (HU-01 · Actividades), construida desde Figma (nodo 451:11859).
-// Solo el encabezado tiene funcionalidad: lleva a Sin fecha oficial y abre el modal de HU-03.
+// Tienen funcionalidad el botón del encabezado (abre el modal de HU-03) y la línea bajo el título de la lista (lleva a Sin fecha oficial).
 // El banner, los filtros, las pestañas y la lista son estáticos, con los datos de ejemplo de Figma.
 import { BadgeConteo, Boton, Icono, Input } from "@/components/ui";
 import { HU01_GRUPOS, sinFechaOficial, type Actividad, type Hu01Actividad } from "@/data";
@@ -55,15 +55,9 @@ export default function Actividades({ actividades, onAgregar }: { actividades: A
       <div className="flex flex-col gap-[10px] px-4 pt-7 pb-6 md:px-9">
         <div className="flex flex-wrap items-center gap-4">
           <h1 className="flex-1 text-[27px] font-bold text-foreground">Actividades</h1>
-          <div className="flex flex-wrap items-center gap-4">
-            <Boton variant="link" href={hrefSinFecha()} iconoFin>
-              Sin fecha oficial
-              <BadgeConteo numero={n} tono="suave" size="sm" />
-            </Boton>
-            <Boton iconoInicio="calendario-mas" onClick={onAgregar}>
-              Agregar actividad
-            </Boton>
-          </div>
+          <Boton iconoInicio="calendario-mas" onClick={onAgregar}>
+            Agregar actividad
+          </Boton>
         </div>
         <p className="text-[14px] leading-[1.5] text-muted-foreground">
           Lista unificada de tareas y evaluaciones pendientes de todos tus cursos inscritos
@@ -76,9 +70,21 @@ export default function Actividades({ actividades, onAgregar }: { actividades: A
           <p className="flex-1">Vista unificada activa: Estás viendo las actividades pendientes integradas de tus 5 cursos matriculados.</p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <h2 className="text-[20px] font-normal text-foreground">Todas mis actividades pendientes</h2>
-          <BadgeConteo numero={TOTAL} tono="suave" />
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-3">
+            <h2 className="text-[20px] font-normal text-foreground">Todas mis actividades pendientes</h2>
+            <BadgeConteo numero={TOTAL} tono="suave" />
+          </div>
+          {n > 0 && (
+            <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
+              <p className="min-w-0">
+                {n === 1 ? "No incluye 1 actividad que aún no tiene fecha oficial." : `No incluye ${n} actividades que aún no tienen fecha oficial.`}
+              </p>
+              <Boton variant="link" href={hrefSinFecha()} iconoFin>
+                Ver
+              </Boton>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3">

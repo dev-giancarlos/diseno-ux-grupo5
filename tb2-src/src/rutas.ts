@@ -1,6 +1,6 @@
 import type { IconoNombre } from "@/components/ui";
 
-// Menú del shell. "Sin fecha oficial" no es ítem: es ruta hija de Evaluaciones (R1).
+// Menú del shell. "Sin fecha oficial" no es ítem: es ruta hija de Actividades (D1).
 // Para poblar una pantalla basta con reemplazar su página en `src/pages/`.
 export type ItemMenu = { id: string; etiqueta: string; icono: IconoNombre; href: string };
 
@@ -28,5 +28,10 @@ export function hrefSinFecha(cursoId?: string | null, soloEvaluaciones = false) 
   if (cursoId) q.set("curso", cursoId);
   if (soloEvaluaciones) q.set("solo", "evaluaciones");
   const qs = q.toString();
-  return qs ? `#/evaluaciones/sin-fecha?${qs}` : "#/evaluaciones/sin-fecha";
+  return qs ? `#/actividades/sin-fecha?${qs}` : "#/actividades/sin-fecha";
+}
+
+// #/evaluaciones/sin-fecha era la ruta anterior: se sigue aceptando para no romper enlaces guardados.
+export function esSinFecha({ segmentos: [seccion, sub] }: Ubicacion) {
+  return sub === "sin-fecha" && (seccion === "actividades" || seccion === "evaluaciones");
 }

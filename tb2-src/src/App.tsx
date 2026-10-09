@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Shell, Toast, type AccionAlerta, type AvisoToast } from "@/components/ui";
 import ModalActividad, { type ModoModal } from "@/components/actividades/ModalActividad";
 import { actividadesIniciales, formatoFecha, type Actividad } from "@/data";
-import { hrefSinFecha, leerHash, menu } from "@/rutas";
+import { esSinFecha, hrefSinFecha, leerHash, menu } from "@/rutas";
 import Actividades from "@/pages/Actividades";
 import Cursos, { Curso } from "@/pages/Cursos";
 import Evaluaciones from "@/pages/Evaluaciones";
@@ -48,8 +48,7 @@ export default function App() {
       });
     } else if (creada) {
       // En Sin fecha oficial la actividad nueva ya se ve en la lista: "Ver" no llevaría a ningún lado.
-      const enSinFecha = ubicacion.segmentos.join("/") === "evaluaciones/sin-fecha";
-      mostrarToast(`${a.nombre} quedó en Sin fecha oficial`, enSinFecha ? undefined : { etiqueta: "Ver", href: hrefSinFecha(), onClick: cerrarToast });
+      mostrarToast(`${a.nombre} quedó en Sin fecha oficial`, esSinFecha(ubicacion) ? undefined : { etiqueta: "Ver", href: hrefSinFecha(), onClick: cerrarToast });
     } else mostrarToast("Actividad agregada a tus pendientes");
   }
 
@@ -58,16 +57,17 @@ export default function App() {
   }
 
   const [seccion = "inicio", sub] = ubicacion.segmentos;
-  const item = menu.find((m) => m.id === seccion);
+  const sinFecha = esSinFecha(ubicacion);
+  const item = menu.find((m) => m.id === (sinFecha ? "actividades" : seccion));
 
   let pagina;
   if (seccion === "inicio") pagina = <Inicio actividades={actividades} onAgregar={abrirCrear} />;
   else if (seccion === "cursos") pagina = sub ? <Curso id={sub} actividades={actividades} /> : <Cursos />;
-  else if (seccion === "actividades") pagina = <Actividades actividades={actividades} onAgregar={abrirCrear} />;
-  else if (seccion === "evaluaciones" && sub === "sin-fecha")
+  else if (sinFecha)
     pagina = (
       <SinFecha actividades={actividades} cursoFiltro={ubicacion.query.get("curso")} soloEvaluaciones={ubicacion.query.get("solo") === "evaluaciones"} onAccion={abrirCompletar} onAgregar={abrirCrear} />
     );
+  else if (seccion === "actividades") pagina = <Actividades actividades={actividades} onAgregar={abrirCrear} />;
   else if (seccion === "evaluaciones") pagina = <Evaluaciones actividades={actividades} />;
   else pagina = <Marcador titulo={item?.etiqueta ?? "Página no encontrada"} />;
 

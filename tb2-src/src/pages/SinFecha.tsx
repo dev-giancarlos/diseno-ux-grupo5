@@ -35,8 +35,8 @@ export default function SinFecha({ actividades, cursoFiltro, soloEvaluaciones, o
         subtitulo="Actividades de tus cursos con entrega o cierre cuya fecha oficial el curso todavía no publica."
         miga={
           <nav aria-label="Ruta" className="flex items-center gap-2 text-[13px] text-muted-foreground">
-            <a href="#/evaluaciones" className="rounded-[6px] font-semibold text-accent underline foco-anillo">
-              Evaluaciones
+            <a href="#/actividades" className="rounded-[6px] font-semibold text-accent underline foco-anillo">
+              Actividades
             </a>
             <span aria-hidden="true">/</span>
             <span aria-current="page" className="font-semibold text-foreground">
