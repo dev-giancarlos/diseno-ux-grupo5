@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Shell, Toast } from "@/components/ui";
 import ModalActividad, { type ModoModal } from "@/components/actividades/ModalActividad";
-import { actividadesIniciales, type Actividad } from "@/data";
+import { actividadesIniciales, fechaPublicada, formatoFecha, type Actividad } from "@/data";
 import { leerHash, menu } from "@/rutas";
 import Actividades from "@/pages/Actividades";
 import Cursos, { Curso } from "@/pages/Cursos";
@@ -34,7 +34,18 @@ export default function App() {
   function guardar(a: Actividad) {
     setActividades((lista) => (lista.some((x) => x.id === a.id) ? lista.map((x) => (x.id === a.id ? a : x)) : [...lista, a]));
     setModal(null);
-    setToast("Actividad agregada a tus pendientes");
+    mostrarToast("Actividad agregada a tus pendientes");
+  }
+
+  // Demo: el curso publica la fecha oficial; la actividad sale de Sin fecha oficial.
+  function publicar(a: Actividad) {
+    const fecha = fechaPublicada(a);
+    setActividades((lista) => lista.map((x) => (x.id === a.id ? { ...x, fechaOficial: fecha } : x)));
+    mostrarToast(`El curso publicó la fecha de ${a.nombre}: ${formatoFecha(fecha)}`);
+  }
+
+  function mostrarToast(texto: string) {
+    setToast(texto);
     window.clearTimeout(temporizador.current);
     temporizador.current = window.setTimeout(() => setToast(null), 4500);
   }
@@ -48,7 +59,7 @@ export default function App() {
   else if (seccion === "actividades") pagina = <Actividades actividades={actividades} onAgregar={abrirCrear} />;
   else if (seccion === "evaluaciones" && sub === "sin-fecha")
     pagina = (
-      <SinFecha actividades={actividades} cursoFiltro={ubicacion.query.get("curso")} onAccion={abrirCompletar} onAgregar={abrirCrear} />
+      <SinFecha actividades={actividades} cursoFiltro={ubicacion.query.get("curso")} onAccion={abrirCompletar} onAgregar={abrirCrear} onPublicar={publicar} />
     );
   else if (seccion === "evaluaciones") pagina = <Evaluaciones actividades={actividades} />;
   else pagina = <Marcador titulo={item?.etiqueta ?? "Página no encontrada"} />;

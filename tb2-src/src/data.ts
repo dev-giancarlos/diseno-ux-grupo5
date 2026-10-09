@@ -147,6 +147,18 @@ export function ordenar(lista: Actividad[]): Actividad[] {
   return [...conSemana, ...sinSemana];
 }
 
+// Demo: fecha que "publica" el curso. Usa la fecha que anotó la alumna si la hay;
+// si no, el viernes de su semana a las 23:59. El ciclo empieza el lunes 21/09/2026, como el Módulo A de Carmen.
+const INICIO_CICLO = new Date(2026, 8, 21);
+export function fechaPublicada(a: Actividad): Date {
+  if (a.fechaAlumno) return a.fechaAlumno;
+  const semana = semanaDe(a) ?? 12;
+  const d = new Date(INICIO_CICLO);
+  d.setDate(d.getDate() + (semana - 1) * 7 + 4);
+  d.setHours(23, 59);
+  return d;
+}
+
 export const sinFechaOficial = (lista: Actividad[]) => lista.filter((a) => a.fechaOficial == null);
 
 export const cursoPorId = (id: string) => cursos.find((c) => c.id === id) as Curso;

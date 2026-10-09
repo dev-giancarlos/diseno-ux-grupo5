@@ -271,7 +271,7 @@ export default function Evaluaciones({ actividades }: { actividades: Actividad[]
         </select>
       </div>
         {sinFecha > 0 && (
-          <div className="w-full md:w-[400px]">
+          <div className="w-full md:ml-auto md:w-[400px]">
             <Alerta
               tono="warn"
               texto={sinFecha === 1 ? "1 evaluación aún no tiene fecha oficial" : `${sinFecha} evaluaciones aún no tienen fecha oficial`}
