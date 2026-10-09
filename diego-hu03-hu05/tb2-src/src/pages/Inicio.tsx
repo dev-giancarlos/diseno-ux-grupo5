@@ -3,12 +3,13 @@ import FilaActividad from "@/components/actividades/FilaActividad";
 import { ordenar, sinFechaOficial, type Actividad } from "@/data";
 import { hrefSinFecha } from "@/rutas";
 import Encabezado from "./Encabezado";
+import { backend } from "@/backend";
 
 export default function Inicio({ actividades, onAgregar }: { actividades: Actividad[]; onAgregar: () => void }) {
   const lista = ordenar(sinFechaOficial(actividades));
   return (
     <Pagina>
-      <Encabezado titulo="Inicio" subtitulo="Hola, Yulissa" />
+      <Encabezado titulo="Inicio" subtitulo={`Hola, ${backend.usuario.nombreCorto}`} />
       <div className="grid items-start gap-5 lg:grid-cols-[2fr_1fr]">
         <Stack gap={20}>
           <BloqueMarcador alto="lg" />

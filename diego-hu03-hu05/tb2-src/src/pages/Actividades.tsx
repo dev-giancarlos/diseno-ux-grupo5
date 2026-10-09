@@ -2,7 +2,7 @@
 // Tienen funcionalidad el botón del encabezado (abre el modal de HU-03) y la línea bajo el título de la lista (lleva a Sin fecha oficial).
 // El banner, los filtros, las pestañas y la lista son estáticos, con los datos de ejemplo de Figma.
 import { BadgeConteo, Boton, Icono, Input } from "@/components/ui";
-import { HU01_GRUPOS, sinFechaOficial, type Actividad, type Hu01Actividad } from "@/data";
+import { cursos, HU01_GRUPOS, sinFechaOficial, type Actividad, type Hu01Actividad } from "@/data";
 import { hrefSinFecha } from "@/rutas";
 
 const TOTAL = HU01_GRUPOS.reduce((n, g) => n + g.actividades.length, 0);
@@ -26,8 +26,8 @@ function FilaPendiente({ a }: { a: Hu01Actividad }) {
         </span>
       </div>
       <div className="flex w-[80px] flex-col gap-[3px] whitespace-nowrap">
-        <p className="text-[14px] font-semibold text-foreground">{a.peso}</p>
-        <p className="text-[11px] text-muted-foreground">nota final</p>
+        <p className="text-[14px] font-semibold text-foreground">{a.peso ?? "Sin peso"}</p>
+        <p className="text-[11px] text-muted-foreground">{a.peso ? "nota final" : "en la nota"}</p>
       </div>
       <Boton variant="secondary" size="sm">
         Ver actividad
@@ -67,7 +67,7 @@ export default function Actividades({ actividades, onAgregar }: { actividades: A
       <div className="flex flex-col gap-6 px-4 pt-2 pb-7 md:px-9">
         <div className="flex min-h-12 items-center gap-[10px] rounded-[8px] border border-[#eef0ff] bg-accent-muted px-3 py-[11px] text-[13px] text-foreground">
           <Icono nombre="success" />
-          <p className="flex-1">Vista unificada activa: Estás viendo las actividades pendientes integradas de tus 5 cursos matriculados.</p>
+          <p className="flex-1">Vista unificada activa: Estás viendo las actividades pendientes integradas de tus {cursos.length} cursos matriculados.</p>
         </div>
 
         <div className="flex flex-col gap-1">
@@ -104,7 +104,7 @@ export default function Actividades({ actividades, onAgregar }: { actividades: A
 
         <div className="flex gap-6 overflow-x-auto border-b border-border">
           <Pestana texto={`Todos los pendientes (${TOTAL})`} activa />
-          <Pestana texto="Por entregar esta semana (3)" />
+          <Pestana texto={`Por entregar esta semana (${HU01_GRUPOS[1].actividades.length})`} />
           <Pestana texto="Vencidas (0)" />
         </div>
 
@@ -124,7 +124,7 @@ export default function Actividades({ actividades, onAgregar }: { actividades: A
             </section>
           ))}
           <div className="flex flex-wrap justify-between gap-2 pt-1 text-muted-foreground">
-            <p className="text-[12px]">Mostrando {TOTAL} actividades pendientes de 5 cursos</p>
+            <p className="text-[12px]">Mostrando {TOTAL} actividades pendientes de {cursos.length} cursos</p>
             <p className="text-[11px]">Hora local · Lima (GMT-5)</p>
           </div>
         </div>

@@ -1,16 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Shell, Toast, type AccionAlerta, type AvisoToast } from "@/components/ui";
+import { backend } from "@/backend";
 import ModalActividad, { type ModoModal } from "@/components/actividades/ModalActividad";
 import { actividadesIniciales, formatoFecha, type Actividad } from "@/data";
 import { esSinFecha, hrefSinFecha, leerHash, menu } from "@/rutas";
 import Actividades from "@/pages/Actividades";
+import ActividadesRuben from "@/pages/ruben/ActividadesRuben";
+import CalendarioRuben from "@/pages/ruben/CalendarioRuben";
 import Cursos, { Curso } from "@/pages/Cursos";
 import Evaluaciones from "@/pages/Evaluaciones";
 import Inicio from "@/pages/Inicio";
 import Marcador from "@/pages/Marcador";
 import SinFecha from "@/pages/SinFecha";
-
-const USUARIO = { nombre: "Yulissa Terán", rol: "Estudiante", iniciales: "YT" };
 
 export default function App() {
   const [ubicacion, setUbicacion] = useState(leerHash);
@@ -71,12 +72,14 @@ export default function App() {
     pagina = (
       <SinFecha actividades={actividades} cursoFiltro={ubicacion.query.get("curso")} soloEvaluaciones={ubicacion.query.get("solo") === "evaluaciones"} onAccion={abrirCompletar} onAgregar={abrirCrear} />
     );
-  else if (seccion === "actividades") pagina = <Actividades actividades={actividades} onAgregar={abrirCrear} />;
+  else if (seccion === "actividades") pagina = <ActividadesRuben actividades={actividades} onAgregar={abrirCrear} />;
+  else if (seccion === "actividades-old") pagina = <Actividades actividades={actividades} onAgregar={abrirCrear} />;
+  else if (seccion === "calendario") pagina = <CalendarioRuben />;
   else if (seccion === "evaluaciones") pagina = <Evaluaciones actividades={actividades} />;
   else pagina = <Marcador titulo={item?.etiqueta ?? "Página no encontrada"} />;
 
   return (
-    <Shell items={menu} activo={item?.id ?? ""} usuario={USUARIO}>
+    <Shell items={menu} activo={item?.id ?? ""} usuario={backend.usuario}>
       {pagina}
       <ModalActividad estado={modal} onCerrar={() => setModal(null)} onGuardar={guardar} />
       <Toast aviso={toast} onCerrar={cerrarToast} />

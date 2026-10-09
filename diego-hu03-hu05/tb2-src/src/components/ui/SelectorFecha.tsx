@@ -2,7 +2,7 @@
 // Con soloDia (fecha oficial) solo se elige un día. El panel se abre debajo del campo, dentro del flujo,
 // para que no lo recorte el modal en pantallas chicas.
 import { useEffect, useRef, useState } from "react";
-import { diaCorto, inicioSemana, INICIO_CICLO, rangoSemana, semanaDeFecha, semanas } from "@/data";
+import { diaCorto, HOY, inicioSemana, INICIO_CICLO, rangoSemana, semanaDeFecha, semanas } from "@/data";
 import Icono from "./Icono";
 
 type SelectorFechaProps = {
@@ -35,7 +35,7 @@ function lunes(d: Date) {
 
 export default function SelectorFecha({ id, semana, dia, soloDia = false, error = false, descripcionId, onSemana, onDia }: SelectorFechaProps) {
   const [abierto, setAbierto] = useState<null | "semanas" | "calendario">(null);
-  const hoy = soloFecha(new Date());
+  const hoy = soloFecha(HOY);
   const semanaHoy = semanaDeFecha(hoy);
   const base = dia ?? (semana ? inicioSemana(semana) : hoy < INICIO_CICLO ? INICIO_CICLO : hoy);
   const [mes, setMes] = useState(() => new Date(base.getFullYear(), base.getMonth(), 1));

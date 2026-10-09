@@ -3,7 +3,8 @@
 // reescribía el DOM ahora es estado del componente. Solo se porta el contenido: el sidebar es el de la app.
 import { useRef, useState } from "react";
 import { Alerta } from "@/components/ui";
-import { esEvaluacion, HU04_COMPONENTES, HU04_CURSOS, HU04_ESTUDIANTE, HU04_FECHA_HOY, HU04_MODULO_A_FIN, sinFechaOficial, type Actividad, type Hu04Curso } from "@/data";
+import { backend } from "@/backend";
+import { cursoPorId, esEvaluacion, HU04_ESTUDIANTE, HU04_FECHA_HOY, HU04_MODULO_A_FIN, sinFechaOficial, type Actividad, type Curso } from "@/data";
 import { hrefSinFecha } from "@/rutas";
 import "./evaluaciones/estilos-carmen.css";
 
@@ -70,21 +71,16 @@ function proximoRecordatorio(fecha: Date, rec: Recordatorios) {
   return mismoDia(r, FECHA_HOY) ? `hoy ${hora(r)}` : `${DIAS[r.getDay()]} ${fechaCorta(r)}, ${hora(r)}`;
 }
 
-/* Junta evaluaciones y actividades sin peso de los cursos del módulo vigente */
-type Item = { titulo: string; curso: Hu04Curso; fecha: Date; publicado: Date; peso: number | null; completada: boolean };
+/* Evaluaciones del módulo vigente: las actividades calificadas, pendientes y completadas */
+type Item = { titulo: string; curso: Curso; fecha: Date; publicado: Date; peso: number | null; completada: boolean };
 function obtenerActividades(): Item[] {
-  const lista: Item[] = [];
-  HU04_CURSOS.filter((c) => c.modulo === "A").forEach((c) => {
-    c.evaluaciones.forEach((e) =>
-      lista.push({
-        titulo: `${e.tipo} · ${HU04_COMPONENTES[e.tipo].nombre}`, curso: c, fecha: e.fecha,
-        publicado: e.publicado, peso: HU04_COMPONENTES[e.tipo].peso, completada: e.nota !== null,
-      }),
-    );
-    c.actividadesSinPeso.forEach((a) =>
-      lista.push({ titulo: a.titulo, curso: c, fecha: a.fecha, publicado: a.publicado, peso: null, completada: false }),
-    );
+  const item = (p: (typeof backend.pendientes)[number], completada: boolean): Item => ({
+    titulo: p.titulo, curso: cursoPorId(p.cursoId), fecha: p.vence, publicado: p.publicado, peso: p.peso, completada,
   });
+  const lista = [
+    ...backend.pendientes.filter((p) => p.peso != null).map((p) => item(p, false)),
+    ...backend.completadas.map((p) => item(p, true)),
+  ];
   return lista.sort((a, b) => a.fecha.getTime() - b.fecha.getTime());
 }
 
@@ -176,7 +172,7 @@ function VistaPorRealizar({ pendientes, rec, mostrarTodas, onVerTodas }: { pendi
             <button className="btn-enlace" id="ver-todas" type="button" onClick={onVerTodas}>
               {mostrarTodas
                 ? "Mostrar menos"
-                : `+ ${restantes} evaluaciones más hasta el fin del módulo (${fechaCorta(HU04_MODULO_A_FIN)}) · Ver todas →`}
+                : `+ ${restantes} ${restantes === 1 ? "evaluación" : "evaluaciones"} más hasta el fin del módulo (${fechaCorta(HU04_MODULO_A_FIN)}) · Ver todas →`}
             </button>
           )}
         </>

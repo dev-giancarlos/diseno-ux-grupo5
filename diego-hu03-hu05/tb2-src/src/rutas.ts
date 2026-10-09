@@ -8,6 +8,8 @@ export const menu: ItemMenu[] = [
   { id: "inicio", etiqueta: "Inicio", icono: "inicio", href: "#/" },
   { id: "cursos", etiqueta: "Cursos", icono: "cursos", href: "#/cursos" },
   { id: "actividades", etiqueta: "Actividades", icono: "actividad", href: "#/actividades" },
+  // Temporal: la pantalla anterior de Actividades, para comparar con la de Rubén.
+  { id: "actividades-old", etiqueta: "Actividades (old)", icono: "actividad", href: "#/actividades-old" },
   { id: "evaluaciones", etiqueta: "Evaluaciones", icono: "evaluaciones", href: "#/evaluaciones" },
   { id: "calendario", etiqueta: "Calendario", icono: "calendario", href: "#/calendario" },
   { id: "calificaciones", etiqueta: "Calificaciones", icono: "calificaciones", href: "#/calificaciones" },

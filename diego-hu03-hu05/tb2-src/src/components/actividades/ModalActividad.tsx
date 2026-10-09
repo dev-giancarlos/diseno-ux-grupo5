@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Alerta, Campo, Icono, Input, Interruptor, Modal, ModalPieAcciones, OpcionesTarjeta, SelectorFecha, Stack } from "@/components/ui";
-import { cursoPorId, cursos, type Actividad } from "@/data";
+import { cursoPorId, cursos, HOY, type Actividad } from "@/data";
 
 // Una sola acción por fila: el tipo de fecha decide si la actividad sigue en Sin fecha oficial.
 export type ModoModal = { modo: "crear" } | { modo: "completar"; actividad: Actividad };
@@ -66,7 +66,7 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
     if (!completar && !v.nombre.trim()) e.nombre = "Escribe el nombre";
     if (oficial && !v.dia) e.cuando = "Elige el día que confirmó el docente";
     else if (!v.dia && !v.semana) e.cuando = "Elige una semana o un día";
-    else if (v.dia && v.dia < soloFecha(new Date())) e.cuando = "Elige una fecha futura";
+    else if (v.dia && v.dia < soloFecha(HOY)) e.cuando = "Elige una fecha futura";
     const peso = Number(v.peso);
     if (v.calificada && v.peso.trim() && !(peso > 0 && peso <= 100)) e.peso = "Escribe un porcentaje entre 1 y 100";
     setErrores(e);
