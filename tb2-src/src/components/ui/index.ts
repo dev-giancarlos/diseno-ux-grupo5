@@ -10,3 +10,5 @@ export { default as Modal, ModalPieAcciones } from "./Modal";
 export { default as Shell } from "./Shell";
 export { default as EstadoVacio } from "./EstadoVacio";
 export { default as Interruptor } from "./Interruptor";
+export { default as OpcionesTarjeta } from "./OpcionesTarjeta";
+export { default as SelectorFecha } from "./SelectorFecha";

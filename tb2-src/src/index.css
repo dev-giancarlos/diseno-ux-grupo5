@@ -90,6 +90,15 @@
   p {
     margin: 0;
   }
+  /* Campos numéricos sin flechas: el valor se escribe (ej. el peso en %). */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
   dialog::backdrop {
     background: color-mix(in srgb, var(--foreground) 50%, transparent);
   }

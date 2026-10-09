@@ -275,7 +275,7 @@ export default function Evaluaciones({ actividades }: { actividades: Actividad[]
             <Alerta
               tono="warn"
               texto={sinFecha === 1 ? "1 evaluación aún no tiene fecha oficial" : `${sinFecha} evaluaciones aún no tienen fecha oficial`}
-              accion={{ etiqueta: "Ver", href: hrefSinFecha() }}
+              accion={{ etiqueta: "Ver", href: hrefSinFecha(null, true) }}
             />
           </div>
         )}

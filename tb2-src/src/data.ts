@@ -30,7 +30,6 @@ export const cursos: Curso[] = [
   { id: "fisica1", nombre: "Física 1", nrc: "1844" },
 ];
 
-export const semanas = Array.from({ length: 16 }, (_, i) => i + 1);
 
 export const actividadesIniciales: Actividad[] = [
   {
@@ -91,7 +90,7 @@ export const actividadesIniciales: Actividad[] = [
     fuenteFecha: "estimada",
     calificada: false,
     peso: null,
-    nota: "Fuente: Es una estimación mía",
+    nota: "",
   },
   {
     id: "foro",
@@ -129,6 +128,37 @@ export function badgesDe(a: Actividad): BadgeDato[] {
 export const tieneFechaPropia = (a: Actividad) => a.fechaAlumno != null || a.semanaAlumno != null;
 
 export const semanaDe = (a: Actividad) => a.semanaOficial ?? a.semanaAlumno;
+
+/* ---------- Semanas del ciclo ----------
+   El ciclo empieza el lunes 21/09/2026, como el Módulo A de Carmen, y dura 16 semanas. */
+export const INICIO_CICLO = new Date(2026, 8, 21);
+export const semanas = Array.from({ length: 16 }, (_, i) => i + 1);
+const DIA_MS = 864e5;
+const soloDia = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+export function inicioSemana(n: number): Date {
+  const d = new Date(INICIO_CICLO);
+  d.setDate(d.getDate() + (n - 1) * 7);
+  return d;
+}
+
+export function semanaDeFecha(d: Date): number | null {
+  const n = Math.floor((soloDia(d).getTime() - INICIO_CICLO.getTime()) / (7 * DIA_MS)) + 1;
+  return n >= 1 && n <= semanas.length ? n : null;
+}
+
+// "2 – 8 nov" o "26 oct – 1 nov"
+export function rangoSemana(n: number): string {
+  const ini = inicioSemana(n);
+  const fin = new Date(ini);
+  fin.setDate(ini.getDate() + 6);
+  return ini.getMonth() === fin.getMonth()
+    ? `${ini.getDate()} – ${fin.getDate()} ${MESES[fin.getMonth()]}`
+    : `${ini.getDate()} ${MESES[ini.getMonth()]} – ${fin.getDate()} ${MESES[fin.getMonth()]}`;
+}
+
+// "mié 4 nov"
+export const diaCorto = (d: Date) => `${DIAS[d.getDay()]} ${d.getDate()} ${MESES[d.getMonth()]}`;
 
 const DIAS = ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"];
 const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];

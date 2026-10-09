@@ -22,5 +22,11 @@ export function leerHash(): Ubicacion {
   return { segmentos: ruta.split("/").filter(Boolean), query: new URLSearchParams(qs) };
 }
 
-export const hrefSinFecha = (cursoId?: string | null) =>
-  cursoId ? `#/evaluaciones/sin-fecha?curso=${cursoId}` : "#/evaluaciones/sin-fecha";
+// Filtros de Sin fecha oficial en la URL: se mantienen al volver atrás y al combinar curso y "solo evaluaciones".
+export function hrefSinFecha(cursoId?: string | null, soloEvaluaciones = false) {
+  const q = new URLSearchParams();
+  if (cursoId) q.set("curso", cursoId);
+  if (soloEvaluaciones) q.set("solo", "evaluaciones");
+  const qs = q.toString();
+  return qs ? `#/evaluaciones/sin-fecha?${qs}` : "#/evaluaciones/sin-fecha";
+}

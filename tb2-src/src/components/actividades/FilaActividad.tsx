@@ -5,11 +5,10 @@ type FilaProps = {
   actividad: Actividad;
   compacta?: boolean;
   onAccion?: (a: Actividad) => void;
-  onOficial?: (a: Actividad) => void;
 };
 
 // Fila única para lista, tarjeta de Inicio, escritorio y móvil (C8, C11).
-export default function FilaActividad({ actividad: a, compacta = false, onAccion, onOficial }: FilaProps) {
+export default function FilaActividad({ actividad: a, compacta = false, onAccion }: FilaProps) {
   const curso = cursoPorId(a.cursoId);
   const semana = semanaDe(a);
 
@@ -56,11 +55,6 @@ export default function FilaActividad({ actividad: a, compacta = false, onAccion
         )}
       </div>
       <div className="flex flex-wrap items-center gap-x-4 @[560px]:col-start-2 @[560px]:row-start-2 @[560px]:self-end @[560px]:justify-self-end">
-        {onOficial && (
-          <Boton variant="link" iconoInicio="calendar-check" onClick={() => onOficial(a)}>
-            Confirmar fecha
-          </Boton>
-        )}
         <Boton variant="link" iconoInicio="calendario-mas" onClick={() => onAccion?.(a)}>
           {tieneFechaPropia(a) ? "Editar fecha" : "Agregar fecha"}
         </Boton>

@@ -5,7 +5,7 @@ import { Stack, Texto } from "./Layout";
 type ModalProps = {
   abierto: boolean;
   titulo: string;
-  subtitulo: string;
+  subtitulo: ReactNode;
   onCerrar: () => void;
   pie: ReactNode;
   children: ReactNode;

@@ -1,30 +1,31 @@
 import { useState } from "react";
 import { Boton, ChipFiltroDeCurso, EstadoVacio, Input, ItemLista, Lista, Pagina, Stack, Texto } from "@/components/ui";
 import FilaActividad from "@/components/actividades/FilaActividad";
-import { cursos, ordenar, sinFechaOficial, type Actividad } from "@/data";
+import { cursos, esEvaluacion, ordenar, sinFechaOficial, type Actividad } from "@/data";
 import { hrefSinFecha } from "@/rutas";
 import Encabezado from "./Encabezado";
 
 type Props = {
   actividades: Actividad[];
   cursoFiltro: string | null;
+  soloEvaluaciones: boolean;
   onAccion: (a: Actividad) => void;
   onAgregar: () => void;
-  onOficial: (a: Actividad) => void;
 };
 
-export default function SinFecha({ actividades, cursoFiltro, onAccion, onAgregar, onOficial }: Props) {
+export default function SinFecha({ actividades, cursoFiltro, soloEvaluaciones, onAccion, onAgregar }: Props) {
   const [busqueda, setBusqueda] = useState("");
   const todas = sinFechaOficial(actividades);
   const curso = cursos.find((c) => c.id === cursoFiltro) ?? null;
   const q = busqueda.trim().toLowerCase();
   const visibles = ordenar(
-    todas.filter((a) => (!curso || a.cursoId === curso.id) && (!q || a.nombre.toLowerCase().includes(q))),
+    todas.filter((a) => (!curso || a.cursoId === curso.id) && (!soloEvaluaciones || esEvaluacion(a)) && (!q || a.nombre.toLowerCase().includes(q))),
   );
-  const irA = (id: string | null) => (window.location.hash = hrefSinFecha(id));
+  // Cada filtro se quita por separado; cambiar el curso no quita "Solo evaluaciones".
+  const irA = (id: string | null, solo = soloEvaluaciones) => (window.location.hash = hrefSinFecha(id, solo));
   const quitarFiltro = () => {
     setBusqueda("");
-    irA(null);
+    irA(null, false);
   };
 
   return (
@@ -68,20 +69,23 @@ export default function SinFecha({ actividades, cursoFiltro, onAccion, onAgregar
         </Boton>
       </Stack>
 
-      {curso && (
-        <div>
-          <ChipFiltroDeCurso etiqueta={curso.nombre} onQuitar={() => irA(null)} />
+      {(curso || soloEvaluaciones) && (
+        <div className="flex flex-wrap gap-2">
+          {soloEvaluaciones && <ChipFiltroDeCurso etiqueta="Solo evaluaciones" onQuitar={() => irA(curso?.id ?? null, false)} />}
+          {curso && <ChipFiltroDeCurso etiqueta={curso.nombre} onQuitar={() => irA(null)} />}
         </div>
       )}
       <Texto variante="meta">
-          {visibles.length === 1 ? "1 actividad" : `${visibles.length} actividades`}
+        {soloEvaluaciones
+          ? visibles.length === 1 ? "1 evaluación" : `${visibles.length} evaluaciones`
+          : visibles.length === 1 ? "1 actividad" : `${visibles.length} actividades`}
       </Texto>
 
       {visibles.length > 0 ? (
         <Lista>
           {visibles.map((a) => (
             <ItemLista key={a.id}>
-              <FilaActividad actividad={a} onAccion={onAccion} onOficial={onOficial} />
+              <FilaActividad actividad={a} onAccion={onAccion} />
             </ItemLista>
           ))}
         </Lista>
