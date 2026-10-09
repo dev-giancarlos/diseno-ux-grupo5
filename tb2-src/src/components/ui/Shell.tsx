@@ -14,7 +14,8 @@ type ShellProps = {
 export default function Shell({ items, activo, usuario, children }: ShellProps) {
   const [abierto, setAbierto] = useState(false);
   return (
-    <div className="flex min-h-full flex-col md:flex-row">
+    // El fondo oscuro continúa bajo el sidebar en páginas largas (también en capturas de página completa).
+    <div className="flex min-h-full flex-col md:flex-row md:bg-[linear-gradient(to_right,var(--primary)_200px,transparent_200px)]">
       <header className="flex items-center justify-between bg-primary px-4 py-3 md:hidden">
         <img src="assets/logo-upc-blanco.svg" alt="UPC" className="h-8 w-auto" />
         <button
