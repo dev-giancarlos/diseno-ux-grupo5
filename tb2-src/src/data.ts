@@ -1,28 +1,17 @@
-import type { IconoNombre } from "@/components/ui";
-
 export type Curso = { id: string; nombre: string; nrc: string };
 
 export type Actividad = {
   id: string;
   cursoId: string;
   nombre: string;
-  origen: "docente" | "alumno";
-  semanaOficial: number | null;
   fechaOficial: Date | null;
   fechaAlumno: Date | null;
   horaAlumno: string | null;
   semanaAlumno: number | null;
-  fuenteFecha: "estimada" | "anunciada" | null;
+  fuenteFecha: "estimada" | "anunciada";
   calificada: boolean;
   peso: number | null; // % de la nota final, si se conoce
   nota: string;
-};
-
-export type BadgeDato = {
-  texto: string;
-  tono: "neutral" | "accent";
-  estilo: "relleno" | "contorno";
-  icono: IconoNombre;
 };
 
 export const cursos: Curso[] = [
@@ -30,34 +19,30 @@ export const cursos: Curso[] = [
   { id: "fisica1", nombre: "Física 1", nrc: "1844" },
 ];
 
-
+// Todas las actividades las registra la alumna: el curso no publica semanas ni fechas (D11).
 export const actividadesIniciales: Actividad[] = [
   {
     id: "pc1",
     cursoId: "redes",
     nombre: "Práctica Calificada 1",
-    origen: "docente",
-    semanaOficial: 3,
     fechaOficial: null,
     fechaAlumno: null,
     horaAlumno: null,
-    semanaAlumno: null,
-    fuenteFecha: null,
+    semanaAlumno: 3,
+    fuenteFecha: "anunciada",
     calificada: true,
-    peso: null,
+    peso: 15,
     nota: "",
   },
   {
     id: "control1",
     cursoId: "redes",
     nombre: "Control 1",
-    origen: "docente",
-    semanaOficial: null,
     fechaOficial: null,
     fechaAlumno: null,
     horaAlumno: null,
-    semanaAlumno: null,
-    fuenteFecha: null,
+    semanaAlumno: 9,
+    fuenteFecha: "estimada",
     calificada: true,
     peso: null,
     nota: "",
@@ -66,23 +51,19 @@ export const actividadesIniciales: Actividad[] = [
     id: "tf",
     cursoId: "redes",
     nombre: "Trabajo Final (TB2 y DD1)",
-    origen: "docente",
-    semanaOficial: 7,
     fechaOficial: null,
     fechaAlumno: null,
     horaAlumno: null,
-    semanaAlumno: null,
-    fuenteFecha: null,
+    semanaAlumno: 7,
+    fuenteFecha: "anunciada",
     calificada: true,
-    peso: null,
+    peso: 20,
     nota: "",
   },
   {
     id: "lab5",
     cursoId: "fisica1",
     nombre: "Laboratorio 5",
-    origen: "docente",
-    semanaOficial: null,
     fechaOficial: null,
     fechaAlumno: new Date(2026, 9, 30, 23, 59),
     horaAlumno: "23:59",
@@ -96,38 +77,18 @@ export const actividadesIniciales: Actividad[] = [
     id: "foro",
     cursoId: "fisica1",
     nombre: "Foro obligatorio",
-    origen: "alumno",
-    semanaOficial: null,
     fechaOficial: null,
     fechaAlumno: null,
     horaAlumno: null,
     semanaAlumno: 10,
-    fuenteFecha: null,
+    fuenteFecha: "anunciada",
     calificada: false,
     peso: null,
     nota: "",
   },
 ];
 
-export function badgesDe(a: Actividad): BadgeDato[] {
-  if (a.origen === "alumno") {
-    return [
-      { texto: "Fecha agregada por ti", tono: "accent", estilo: "contorno", icono: "calendar-check" },
-    ];
-  }
-  const lista: BadgeDato[] =
-    a.semanaOficial != null
-      ? [{ texto: "Solo semana", tono: "neutral", estilo: "relleno", icono: "calendario" }]
-      : [{ texto: "Fecha por definir", tono: "neutral", estilo: "relleno", icono: "clock" }];
-  if (a.fechaAlumno != null || a.semanaAlumno != null) {
-    lista.push({ texto: "Fecha anotada por ti", tono: "accent", estilo: "contorno", icono: "clock" });
-  }
-  return lista;
-}
-
-export const tieneFechaPropia = (a: Actividad) => a.fechaAlumno != null || a.semanaAlumno != null;
-
-export const semanaDe = (a: Actividad) => a.semanaOficial ?? a.semanaAlumno;
+export const semanaDe = (a: Actividad) => a.semanaAlumno ?? (a.fechaAlumno ? semanaDeFecha(a.fechaAlumno) : null);
 
 /* ---------- Semanas del ciclo ----------
    El ciclo empieza el lunes 21/09/2026, como el Módulo A de Carmen, y dura 16 semanas. */
@@ -168,18 +129,17 @@ export function formatoFecha(d: Date): string {
   return `${DIAS[d.getDay()]} ${d.getDate()} ${MESES[d.getMonth()]} · ${dos(d.getHours())}:${dos(d.getMinutes())}`;
 }
 
-export function fechaPropiaTexto(a: Actividad): string | null {
-  if (a.fechaAlumno) return `Tu fecha: ${formatoFecha(a.fechaAlumno)}`;
-  if (a.semanaAlumno != null) return `Tu fecha: Semana ${a.semanaAlumno}`;
-  return null;
-}
+// "Semana 3" o "vie 30 oct · 23:59"
+export const fechaAlumnoTexto = (a: Actividad) => (a.fechaAlumno ? formatoFecha(a.fechaAlumno) : `Semana ${a.semanaAlumno}`);
 
+// Por semana; dentro de la misma semana, primero las que solo tienen semana y luego por día.
 export function ordenar(lista: Actividad[]): Actividad[] {
-  const conSemana = lista
-    .filter((a) => semanaDe(a) != null)
-    .sort((x, y) => (semanaDe(x) as number) - (semanaDe(y) as number));
-  const sinSemana = lista.filter((a) => semanaDe(a) == null);
-  return [...conSemana, ...sinSemana];
+  const clave = (a: Actividad) => [semanaDe(a) ?? Infinity, a.fechaAlumno?.getTime() ?? -Infinity];
+  return [...lista].sort((x, y) => {
+    const [sx, fx] = clave(x);
+    const [sy, fy] = clave(y);
+    return sx - sy || fx - fy;
+  });
 }
 
 export const sinFechaOficial = (lista: Actividad[]) => lista.filter((a) => a.fechaOficial == null);

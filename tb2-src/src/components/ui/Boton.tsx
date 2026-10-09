@@ -82,13 +82,13 @@ export default function Boton({
 
   if (href) {
     return (
-      <a href={href} className={clases} aria-label={soloIcono ? etiqueta : undefined} onClick={onClick}>
+      <a href={href} className={clases} aria-label={etiqueta} onClick={onClick}>
         {contenido}
       </a>
     );
   }
   return (
-    <button type={type} className={clases} aria-label={soloIcono ? etiqueta : undefined} onClick={onClick}>
+    <button type={type} className={clases} aria-label={etiqueta} onClick={onClick}>
       {contenido}
     </button>
   );

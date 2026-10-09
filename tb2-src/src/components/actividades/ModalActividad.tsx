@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Alerta, Campo, Icono, Input, Interruptor, Modal, ModalPieAcciones, OpcionesTarjeta, SelectorFecha, Stack } from "@/components/ui";
-import { cursoPorId, cursos, tieneFechaPropia, type Actividad } from "@/data";
+import { cursoPorId, cursos, type Actividad } from "@/data";
 
 // Una sola acción por fila: el tipo de fecha decide si la actividad sigue en Sin fecha oficial.
 export type ModoModal = { modo: "crear" } | { modo: "completar"; actividad: Actividad };
@@ -58,7 +58,7 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
     if (clave) setErrores(({ [clave]: _, ...resto }) => resto);
   };
 
-  const titulo = !completar ? "Agregar actividad" : tieneFechaPropia(completar) ? "Editar fecha" : "Agregar fecha";
+  const titulo = completar ? "Editar actividad" : "Agregar actividad";
   // Al crear no se ofrece "Oficial": la actividad saldría de la única lista donde se ve.
   const tipos: TipoFecha[] = completar ? ["oficial", "anunciada", "estimada"] : ["anunciada", "estimada"];
 
@@ -99,8 +99,6 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
             id: `alumno-${Date.now()}`,
             cursoId: v.curso || cursos[0].id,
             nombre: v.nombre.trim(),
-            origen: "alumno",
-            semanaOficial: null,
             fechaOficial: null,
             ...fechaDatos,
           },
@@ -126,7 +124,7 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
       onCerrar={onCerrar}
       pie={
         <ModalPieAcciones
-          etiquetaPrimaria={!completar ? "Agregar actividad" : oficial ? "Guardar fecha oficial" : "Guardar fecha"}
+          etiquetaPrimaria={!completar ? "Agregar actividad" : oficial ? "Guardar fecha oficial" : "Guardar cambios"}
           onCancelar={onCerrar}
           onConfirmar={guardar}
         />

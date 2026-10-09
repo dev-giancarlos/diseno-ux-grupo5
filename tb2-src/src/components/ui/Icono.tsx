@@ -2,6 +2,7 @@ import {
   Activity,
   Award,
   Book,
+  Calculator,
   Calendar,
   CalendarCheck,
   CalendarPlus,
@@ -15,8 +16,10 @@ import {
   FunnelX,
   House,
   Info,
+  Megaphone,
   Menu,
   MessageCircle,
+  Pencil,
   Percent,
   TriangleAlert,
   X,
@@ -44,6 +47,9 @@ const ICONOS = {
   success: CircleCheck,
   "filter-x": FunnelX,
   menu: Menu,
+  anunciada: Megaphone,
+  estimada: Calculator,
+  editar: Pencil,
 } as const;
 
 export type IconoNombre = keyof typeof ICONOS;
