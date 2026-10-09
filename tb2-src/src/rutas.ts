@@ -7,7 +7,7 @@ export type ItemMenu = { id: string; etiqueta: string; icono: IconoNombre; href:
 export const menu: ItemMenu[] = [
   { id: "inicio", etiqueta: "Inicio", icono: "inicio", href: "#/" },
   { id: "cursos", etiqueta: "Cursos", icono: "cursos", href: "#/cursos" },
-  { id: "actividad", etiqueta: "Actividad", icono: "actividad", href: "#/actividad" },
+  { id: "actividades", etiqueta: "Actividades", icono: "actividad", href: "#/actividades" },
   { id: "evaluaciones", etiqueta: "Evaluaciones", icono: "evaluaciones", href: "#/evaluaciones" },
   { id: "calendario", etiqueta: "Calendario", icono: "calendario", href: "#/calendario" },
   { id: "calificaciones", etiqueta: "Calificaciones", icono: "calificaciones", href: "#/calificaciones" },

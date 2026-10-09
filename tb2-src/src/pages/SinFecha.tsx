@@ -44,7 +44,8 @@ export default function SinFecha({ actividades, cursoFiltro, onAccion, onAgregar
         }
       />
 
-      <Stack direccion="fila" gap={12} envolver alinear="center">
+      <Stack direccion="fila" gap={12} envolver alinear="center" justificar="between">
+        <Stack direccion="fila" gap={12} envolver alinear="center">
         <div className="w-full sm:w-[360px]">
           <Input id="buscar" tipo="busqueda" compacto valor={busqueda} onCambio={setBusqueda} marcador="Buscar actividad" etiquetaAria="Buscar actividad" />
         </div>
@@ -60,6 +61,10 @@ export default function SinFecha({ actividades, cursoFiltro, onAccion, onAgregar
             etiquetaAria="Filtrar por curso"
           />
         </div>
+        </Stack>
+        <Boton variant="soft" anchoMovil onClick={onAgregar}>
+          + Agregar actividad
+        </Boton>
       </Stack>
 
       {curso && (

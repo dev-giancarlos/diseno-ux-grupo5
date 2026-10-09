@@ -3,6 +3,7 @@ import { Shell, Toast } from "@/components/ui";
 import ModalActividad, { type ModoModal } from "@/components/actividades/ModalActividad";
 import { actividadesIniciales, type Actividad } from "@/data";
 import { leerHash, menu } from "@/rutas";
+import Actividades from "@/pages/Actividades";
 import Cursos, { Curso } from "@/pages/Cursos";
 import Evaluaciones from "@/pages/Evaluaciones";
 import Inicio from "@/pages/Inicio";
@@ -44,6 +45,7 @@ export default function App() {
   let pagina;
   if (seccion === "inicio") pagina = <Inicio actividades={actividades} onAgregar={abrirCrear} />;
   else if (seccion === "cursos") pagina = sub ? <Curso id={sub} actividades={actividades} /> : <Cursos />;
+  else if (seccion === "actividades") pagina = <Actividades actividades={actividades} onAgregar={abrirCrear} />;
   else if (seccion === "evaluaciones" && sub === "sin-fecha")
     pagina = (
       <SinFecha actividades={actividades} cursoFiltro={ubicacion.query.get("curso")} onAccion={abrirCompletar} onAgregar={abrirCrear} />
@@ -52,7 +54,7 @@ export default function App() {
   else pagina = <Marcador titulo={item?.etiqueta ?? "Página no encontrada"} />;
 
   return (
-    <Shell items={menu} activo={item?.id ?? ""} onAgregar={abrirCrear} usuario={USUARIO}>
+    <Shell items={menu} activo={item?.id ?? ""} usuario={USUARIO}>
       {pagina}
       <ModalActividad estado={modal} onCerrar={() => setModal(null)} onGuardar={guardar} />
       <Toast texto={toast} />

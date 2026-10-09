@@ -1,6 +1,5 @@
 import { useState, type ReactNode } from "react";
 import AvatarIniciales from "./Avatar";
-import Boton from "./Boton";
 import Icono, { type IconoNombre } from "./Icono";
 
 type Item = { id: string; etiqueta: string; icono: IconoNombre; href: string };
@@ -8,12 +7,11 @@ type Item = { id: string; etiqueta: string; icono: IconoNombre; href: string };
 type ShellProps = {
   items: Item[];
   activo: string;
-  onAgregar: () => void;
   usuario: { nombre: string; rol: string; iniciales: string };
   children: ReactNode;
 };
 
-export default function Shell({ items, activo, onAgregar, usuario, children }: ShellProps) {
+export default function Shell({ items, activo, usuario, children }: ShellProps) {
   const [abierto, setAbierto] = useState(false);
   return (
     <div className="flex min-h-full flex-col md:flex-row">
@@ -38,9 +36,6 @@ export default function Shell({ items, activo, onAgregar, usuario, children }: S
         <div className="hidden justify-center md:flex">
           <img src="assets/logo-upc-blanco.svg" alt="UPC" className="size-[50px]" />
         </div>
-        <Boton iconoInicio="calendario-mas" ancho onClick={onAgregar}>
-          Agregar actividad
-        </Boton>
         <nav aria-label="Principal" className="flex-1">
           <ul className="m-0 flex list-none flex-col gap-1 p-0">
             {items.map((it) => {
