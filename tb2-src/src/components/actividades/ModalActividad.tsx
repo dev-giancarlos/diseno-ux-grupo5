@@ -265,8 +265,8 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
           )}
         </Stack>
 
-        <Campo id="m-nota" etiqueta="Nota" descripcion="Dónde lo anunciaron, por ejemplo">
-          <Input id="m-nota" tipo="area" valor={v.nota} onCambio={set("nota")} descripcionId="m-nota-desc" />
+        <Campo id="m-nota" etiqueta="Comentarios (opcional)">
+          <Input id="m-nota" tipo="area" autoCrecer valor={v.nota} marcador="Ej. Lo anunció en la clase del lunes" onCambio={set("nota")} />
         </Campo>
         <button type="submit" hidden />
       </form>

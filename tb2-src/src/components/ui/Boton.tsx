@@ -56,14 +56,14 @@ export default function Boton({
   type = "button",
 }: BotonProps) {
   const sinCaja = variant === "link" || plano;
-  const colorVariante = aviso ? "text-warning-foreground" : "";
+  // Dentro de un aviso, el enlace toma el color del tono del aviso.
+  const colorVariante = aviso ? "text-inherit" : VARIANTES[variant];
   const clases = [
     "inline-flex items-center justify-center gap-[6px] rounded-[6px] font-semibold whitespace-nowrap cursor-pointer no-underline foco-anillo",
     TAMANOS[size],
     sinCaja ? "" : soloIcono ? (size === "sm" ? "w-8 px-0" : "w-10 px-0") : RELLENO[size],
-    plano ? "bg-transparent text-accent border border-transparent hover:bg-accent-muted hover:border-accent px-2" : VARIANTES[variant],
+    plano ? "bg-transparent text-accent border border-transparent hover:bg-accent-muted hover:border-accent px-2" : colorVariante,
     variant === "link" ? "px-0" : "",
-    colorVariante,
     subrayado ? "underline" : "",
     ancho ? "w-full" : "",
     anchoMovil ? "w-full sm:w-auto" : "",

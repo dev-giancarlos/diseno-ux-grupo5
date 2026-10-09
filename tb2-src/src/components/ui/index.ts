@@ -2,7 +2,7 @@ export { default as Icono, type IconoNombre, type IconoSize } from "./Icono";
 export { Stack, Texto, Tarjeta, Pagina, BloqueMarcador, Lista, ItemLista } from "./Layout";
 export { default as Boton } from "./Boton";
 export { default as Badge, BadgeConteo } from "./Badge";
-export { default as Alerta, Toast } from "./Alerta";
+export { default as Alerta, Toast, type AccionAlerta, type AvisoToast } from "./Alerta";
 export { default as AvatarIniciales } from "./Avatar";
 export { default as ChipFiltroDeCurso } from "./Chip";
 export { default as Input, Campo, CampoTexto } from "./Campos";

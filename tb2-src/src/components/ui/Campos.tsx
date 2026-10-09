@@ -1,4 +1,4 @@
-import type { ReactNode, Ref } from "react";
+import { useEffect, useLayoutEffect, useRef, type ReactNode, type Ref } from "react";
 import Icono from "./Icono";
 import { Stack } from "./Layout";
 
@@ -13,6 +13,8 @@ type InputProps = {
   marcador?: string;
   opciones?: Opcion[];
   compacto?: boolean;
+  // Solo tipo "area": empieza en una línea y crece con el texto hasta MAX_LINEAS.
+  autoCrecer?: boolean;
   descripcionId?: string;
   etiquetaAria?: string;
   refEntrada?: Ref<HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement>;
@@ -27,12 +29,13 @@ export default function Input({
   marcador,
   opciones = [],
   compacto = false,
+  autoCrecer = false,
   descripcionId,
   etiquetaAria,
   refEntrada,
 }: InputProps) {
   const bloqueado = estado === "bloqueado";
-  const alto = tipo === "area" ? "h-16 py-[10px]" : compacto ? "h-[38px]" : "h-10";
+  const alto = tipo === "area" ? (autoCrecer ? "h-10 py-[9px] leading-5" : "h-16 py-[10px]") : compacto ? "h-[38px]" : "h-10";
   const borde = estado === "error" ? "border-destructive" : "border-input";
   const fondo = bloqueado ? "bg-muted text-state-neutral" : tipo === "area" ? "bg-background text-foreground" : "bg-card text-foreground";
   const clases = `w-full rounded-[6px] border px-3 text-[13px] placeholder:text-muted-foreground ${alto} ${borde} ${fondo} focus:outline-none focus:border-ring focus:shadow-[inset_0_0_0_1px_var(--ring)]`;
@@ -72,6 +75,10 @@ export default function Input({
     );
   }
 
+  if (tipo === "area" && autoCrecer) {
+    return <AreaAutoCrece comunes={comunes} refEntrada={refEntrada} valor={valor} marcador={marcador} onCambio={onCambio} clases={clases} />;
+  }
+
   if (tipo === "area") {
     return (
       <textarea
@@ -95,6 +102,64 @@ export default function Input({
       placeholder={marcador}
       onChange={(e) => onCambio?.(e.target.value)}
       className={clases}
+    />
+  );
+}
+
+const MAX_LINEAS = 5;
+
+type AreaAutoCreceProps = Pick<InputProps, "refEntrada" | "valor" | "marcador" | "onCambio"> & {
+  comunes: Record<string, unknown>;
+  clases: string;
+};
+
+// La altura se calcula con scrollHeight (y no con field-sizing) para que funcione en todos los navegadores.
+function AreaAutoCrece({ comunes, refEntrada, valor, marcador, onCambio, clases }: AreaAutoCreceProps) {
+  const ref = useRef<HTMLTextAreaElement>(null);
+
+  function ajustar() {
+    const el = ref.current;
+    // Dentro de un <dialog> todavía cerrado no hay medidas: se ajusta cuando se vuelve visible.
+    if (!el || el.clientWidth === 0) return;
+    const s = getComputedStyle(el);
+    const bordes = parseFloat(s.borderTopWidth) + parseFloat(s.borderBottomWidth);
+    const maximo = parseFloat(s.lineHeight) * MAX_LINEAS + parseFloat(s.paddingTop) + parseFloat(s.paddingBottom) + bordes;
+    el.style.height = "auto";
+    const alto = el.scrollHeight + bordes;
+    el.style.height = `${Math.min(alto, maximo)}px`;
+    el.style.overflowY = alto > maximo ? "auto" : "hidden";
+  }
+
+  useLayoutEffect(ajustar, [valor]);
+
+  // Al abrir el modal o cambiar el ancho, el texto ocupa otras líneas. Solo se escucha el ancho:
+  // reaccionar al alto que pone ajustar() volvería a disparar el observador.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let ancho = -1;
+    const observador = new ResizeObserver(([e]) => {
+      if (e.contentRect.width === ancho) return;
+      ancho = e.contentRect.width;
+      requestAnimationFrame(ajustar);
+    });
+    observador.observe(el);
+    return () => observador.disconnect();
+  }, []);
+
+  return (
+    <textarea
+      {...comunes}
+      ref={(el) => {
+        ref.current = el;
+        if (typeof refEntrada === "function") refEntrada(el as HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement);
+        else if (refEntrada) refEntrada.current = el as HTMLInputElement & HTMLSelectElement & HTMLTextAreaElement;
+      }}
+      rows={1}
+      value={valor}
+      placeholder={marcador}
+      onChange={(e) => onCambio?.(e.target.value)}
+      className={`${clases} block resize-none overflow-y-hidden`}
     />
   );
 }
