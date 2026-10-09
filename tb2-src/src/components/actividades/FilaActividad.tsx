@@ -58,7 +58,7 @@ export default function FilaActividad({ actividad: a, compacta = false, onAccion
       <div className="flex flex-wrap items-center gap-x-4 @[560px]:col-start-2 @[560px]:row-start-2 @[560px]:self-end @[560px]:justify-self-end">
         {onOficial && (
           <Boton variant="link" iconoInicio="calendar-check" onClick={() => onOficial(a)}>
-            Marcar fecha oficial
+            Confirmar fecha
           </Boton>
         )}
         <Boton variant="link" iconoInicio="calendario-mas" onClick={() => onAccion?.(a)}>

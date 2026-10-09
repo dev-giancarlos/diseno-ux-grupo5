@@ -35,7 +35,7 @@ export default function App() {
   function guardar(a: Actividad) {
     setActividades((lista) => (lista.some((x) => x.id === a.id) ? lista.map((x) => (x.id === a.id ? a : x)) : [...lista, a]));
     setModal(null);
-    mostrarToast(a.fechaOficial ? `${a.nombre} ya tiene fecha oficial: ${formatoFecha(a.fechaOficial)}` : "Actividad agregada a tus pendientes");
+    mostrarToast(a.fechaOficial ? `${a.nombre}: fecha confirmada, ${formatoFecha(a.fechaOficial)}` : "Actividad agregada a tus pendientes");
   }
 
   function mostrarToast(texto: string) {

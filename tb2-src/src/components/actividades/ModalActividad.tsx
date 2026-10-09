@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Alerta, Campo, Input, Modal, ModalPieAcciones, Stack } from "@/components/ui";
 import { combinarFecha, cursos, semanas, tieneFechaPropia, tipos, type Actividad } from "@/data";
 
-// "oficial": la alumna marca la fecha oficial que anunció el docente; la actividad sale de Sin fecha oficial.
+// "oficial": la alumna confirma la fecha oficial que anunció el docente; la actividad sale de Sin fecha oficial.
 export type ModoModal = { modo: "crear" } | { modo: "completar" | "oficial"; actividad: Actividad };
 
 type Props = {
@@ -48,7 +48,7 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
   const conSemana = !oficial && v.precision === "semana";
   const set = (k: keyof typeof v) => (valor: string) => setV((p) => ({ ...p, [k]: valor }));
 
-  const titulo = oficial ? "Marcar fecha oficial" : !completar ? "Agregar actividad" : tieneFechaPropia(completar) ? "Editar fecha" : "Agregar fecha";
+  const titulo = oficial ? "Confirmar fecha" : !completar ? "Agregar actividad" : tieneFechaPropia(completar) ? "Editar fecha" : "Agregar fecha";
   const descripcionBloqueo = delDocente ? "Viene de tu curso, no se puede editar" : "La registraste tú; aquí solo cambias la fecha";
 
   function guardar() {
@@ -105,7 +105,7 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
       titulo={titulo}
       subtitulo={
         oficial
-          ? "Escribe la fecha que anunció el docente. La actividad sale de Sin fecha oficial."
+          ? "Usa la fecha que anunció el docente. La actividad sale de Sin fecha oficial."
           : completar
           ? "Esta actividad ya está en tu lista. Solo falta la fecha."
           : "Registra una actividad que anunciaron en clase y no aparece en tu curso."
@@ -113,7 +113,7 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
       onCerrar={onCerrar}
       pie={
         <ModalPieAcciones
-          etiquetaPrimaria={oficial ? "Guardar fecha oficial" : completar ? "Guardar fecha" : "Agregar actividad"}
+          etiquetaPrimaria={oficial ? "Confirmar fecha" : completar ? "Guardar fecha" : "Agregar actividad"}
           onCancelar={onCerrar}
           onConfirmar={guardar}
         />
