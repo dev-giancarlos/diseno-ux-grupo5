@@ -38,7 +38,7 @@ export default function FilaActividad({ actividad: a, compacta = false, onAccion
     );
   }
 
-  const tipo = TIPOS[a.fuenteFecha];
+  const tipo = a.fuenteFecha ? TIPOS[a.fuenteFecha] : null;
   const proxima = cercania(a);
 
   return (
@@ -46,7 +46,18 @@ export default function FilaActividad({ actividad: a, compacta = false, onAccion
       <div className="flex min-w-0 flex-col gap-2">
         <h3 className="truncate text-[16px] font-semibold text-foreground">{a.nombre}</h3>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted-foreground">
-          <span>{curso.nombre}</span>
+          <span className="inline-flex flex-wrap items-center gap-x-[6px]">
+            {curso.nombre}
+            {a.origen === "curso" && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span className="inline-flex items-center gap-1 whitespace-nowrap text-accent">
+                  <Icono nombre="cursos" size="sm" />
+                  Del curso
+                </span>
+              </>
+            )}
+          </span>
           {a.calificada && <Badge texto={a.peso != null ? `Calificada · ${a.peso}%` : "Calificada"} icono="calificaciones" />}
         </div>
       </div>
@@ -54,10 +65,17 @@ export default function FilaActividad({ actividad: a, compacta = false, onAccion
         {/* La fecha no se parte: si no entra, la etiqueta de cercanía queda en su propia línea. */}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted-foreground @[560px]:justify-end">
           {proxima && <Badge texto={proxima} tono="warn" />}
-          <span className="inline-flex items-center gap-[6px] whitespace-nowrap">
-            <Icono nombre={tipo.icono} />
-            <span className="font-semibold text-foreground">{fecha}</span>· {tipo.texto}
-          </span>
+          {tipo ? (
+            <span className="inline-flex items-center gap-[6px] whitespace-nowrap">
+              <Icono nombre={tipo.icono} />
+              <span className="font-semibold text-foreground">{fecha}</span>· {tipo.texto}
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-[6px] whitespace-nowrap">
+              <Icono nombre="clock" />
+              {fecha}
+            </span>
+          )}
         </div>
         <Boton variant="link" iconoInicio="editar" etiqueta={`Editar ${a.nombre}`} onClick={() => onAccion?.(a)}>
           Editar

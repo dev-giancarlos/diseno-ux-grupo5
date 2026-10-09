@@ -99,6 +99,7 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
             id: `alumno-${Date.now()}`,
             cursoId: v.curso || cursos[0].id,
             nombre: v.nombre.trim(),
+            origen: "alumno",
             fechaOficial: oficial ? fecha : null,
             ...fechaDatos,
           },

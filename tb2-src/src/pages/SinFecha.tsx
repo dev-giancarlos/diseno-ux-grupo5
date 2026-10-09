@@ -32,7 +32,7 @@ export default function SinFecha({ actividades, cursoFiltro, soloEvaluaciones, o
     <Pagina>
       <Encabezado
         titulo="Sin fecha oficial"
-        subtitulo="Actividades que anotaste con una fecha anunciada en clase o estimada por ti. Cuando el docente confirme la fecha, márcala como Oficial."
+        subtitulo="Actividades de tus cursos que aún no tienen fecha oficial. Agrega la fecha que anunció el docente o una estimada, y márcala como Oficial cuando la confirme."
         miga={
           <nav aria-label="Ruta" className="flex items-center gap-2 text-[13px] text-muted-foreground">
             <a href="#/actividades" className="rounded-[6px] font-semibold text-accent underline foco-anillo">

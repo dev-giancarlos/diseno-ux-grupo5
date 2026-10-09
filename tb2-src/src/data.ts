@@ -4,11 +4,12 @@ export type Actividad = {
   id: string;
   cursoId: string;
   nombre: string;
+  origen: "curso" | "alumno"; // "curso": la listó el curso (sin fecha); "alumno": la registró la alumna
   fechaOficial: Date | null;
   fechaAlumno: Date | null;
   horaAlumno: string | null;
   semanaAlumno: number | null;
-  fuenteFecha: "estimada" | "anunciada";
+  fuenteFecha: "estimada" | "anunciada" | null; // null: el curso la lista sin fecha y la alumna aún no puso una
   calificada: boolean;
   peso: number | null; // % de la nota final, si se conoce
   nota: string;
@@ -19,12 +20,13 @@ export const cursos: Curso[] = [
   { id: "fisica1", nombre: "Física 1", nrc: "1844" },
 ];
 
-// Todas las actividades las registra la alumna: el curso no publica semanas ni fechas (D11).
+// La alumna registra todas las fechas (D11). El curso solo puede listar una actividad, sin fecha.
 export const actividadesIniciales: Actividad[] = [
   {
     id: "pc1",
     cursoId: "redes",
     nombre: "Práctica Calificada 1",
+    origen: "alumno",
     fechaOficial: null,
     fechaAlumno: null,
     horaAlumno: null,
@@ -38,6 +40,7 @@ export const actividadesIniciales: Actividad[] = [
     id: "control1",
     cursoId: "redes",
     nombre: "Control 1",
+    origen: "alumno",
     fechaOficial: null,
     fechaAlumno: null,
     horaAlumno: null,
@@ -51,6 +54,7 @@ export const actividadesIniciales: Actividad[] = [
     id: "tf",
     cursoId: "redes",
     nombre: "Trabajo Final (TB2 y DD1)",
+    origen: "alumno",
     fechaOficial: null,
     fechaAlumno: null,
     horaAlumno: null,
@@ -64,6 +68,7 @@ export const actividadesIniciales: Actividad[] = [
     id: "lab5",
     cursoId: "fisica1",
     nombre: "Laboratorio 5",
+    origen: "alumno",
     fechaOficial: null,
     fechaAlumno: new Date(2026, 9, 30, 23, 59),
     horaAlumno: "23:59",
@@ -74,9 +79,24 @@ export const actividadesIniciales: Actividad[] = [
     nota: "",
   },
   {
+    id: "parcial",
+    cursoId: "redes",
+    nombre: "Examen parcial",
+    origen: "curso",
+    fechaOficial: null,
+    fechaAlumno: null,
+    horaAlumno: null,
+    semanaAlumno: null,
+    fuenteFecha: null,
+    calificada: true,
+    peso: null,
+    nota: "",
+  },
+  {
     id: "foro",
     cursoId: "fisica1",
     nombre: "Foro obligatorio",
+    origen: "alumno",
     fechaOficial: null,
     fechaAlumno: null,
     horaAlumno: null,
@@ -130,7 +150,8 @@ export function formatoFecha(d: Date): string {
 }
 
 // "Semana 3" o "vie 30 oct · 23:59"
-export const fechaAlumnoTexto = (a: Actividad) => (a.fechaAlumno ? formatoFecha(a.fechaAlumno) : `Semana ${a.semanaAlumno}`);
+export const fechaAlumnoTexto = (a: Actividad) =>
+  a.fechaAlumno ? formatoFecha(a.fechaAlumno) : a.semanaAlumno != null ? `Semana ${a.semanaAlumno}` : "Sin fecha";
 
 // Por semana; dentro de la misma semana, primero las que solo tienen semana y luego por día.
 export function ordenar(lista: Actividad[]): Actividad[] {
