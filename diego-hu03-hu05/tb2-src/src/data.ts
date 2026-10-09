@@ -104,16 +104,7 @@ export const HU04_ESTUDIANTE = { periodo: backend.periodo.nombre, moduloActual: 
 
 export const HU04_MODULO_A_FIN = backend.periodo.fin;
 
-// Colores del badge de cada curso en la lista de Actividades.
-const TONOS: Record<Curso["tono"], { fondo: string; texto: string }> = {
-  purple: { fondo: "#eef2ff", texto: "#4338ca" },
-  pink: { fondo: "#fbeff5", texto: "#9d3b72" },
-  cyan: { fondo: "#e8f7f8", texto: "#087f8c" },
-  green: { fondo: "#eaf5ef", texto: "#267052" },
-  amber: { fondo: "#fbf3e4", texto: "#916018" },
-};
-
-export type Hu01Curso = { nombre: string; fondo: string; texto: string; tono: Curso["tono"] };
+export type Hu01Curso = { nombre: string; tono: Curso["tono"] };
 
 export type Hu01Actividad = { plazo: string; urgente: boolean; fecha: string; titulo: string; curso: Hu01Curso; peso: string | null };
 
@@ -139,7 +130,7 @@ export const HU01_GRUPOS: { titulo: string; rango: string; actividades: Hu01Acti
       urgente: dias === 0,
       fecha: `${p.vence.getDate()} ${MESES[p.vence.getMonth()]} · ${dos(p.vence.getHours())}:${dos(p.vence.getMinutes())}`,
       titulo: p.titulo,
-      curso: { nombre: curso.nombre, tono: curso.tono, ...TONOS[curso.tono] },
+      curso: { nombre: curso.nombre, tono: curso.tono },
       peso: p.peso != null ? `${p.peso}%` : null,
     };
   };

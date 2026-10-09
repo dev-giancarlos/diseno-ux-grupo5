@@ -4,7 +4,6 @@ import { backend } from "@/backend";
 import ModalActividad, { type ModoModal } from "@/components/actividades/ModalActividad";
 import { actividadesIniciales, formatoFecha, type Actividad } from "@/data";
 import { esSinFecha, hrefSinFecha, leerHash, menu } from "@/rutas";
-import Actividades from "@/pages/Actividades";
 import ActividadesRuben from "@/pages/ruben/ActividadesRuben";
 import CalendarioRuben from "@/pages/ruben/CalendarioRuben";
 import Cursos, { Curso } from "@/pages/Cursos";
@@ -73,7 +72,6 @@ export default function App() {
       <SinFecha actividades={actividades} cursoFiltro={ubicacion.query.get("curso")} soloEvaluaciones={ubicacion.query.get("solo") === "evaluaciones"} onAccion={abrirCompletar} onAgregar={abrirCrear} />
     );
   else if (seccion === "actividades") pagina = <ActividadesRuben actividades={actividades} onAgregar={abrirCrear} />;
-  else if (seccion === "actividades-old") pagina = <Actividades actividades={actividades} onAgregar={abrirCrear} />;
   else if (seccion === "calendario") pagina = <CalendarioRuben />;
   else if (seccion === "evaluaciones") pagina = <Evaluaciones actividades={actividades} />;
   else pagina = <Marcador titulo={item?.etiqueta ?? "Página no encontrada"} />;
