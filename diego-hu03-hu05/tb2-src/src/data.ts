@@ -1,119 +1,35 @@
-export type Curso = { id: string; nombre: string; nrc: string };
+import { backend, type CursoBackend, type PendienteBackend } from "@/backend";
+
+export type Curso = CursoBackend;
 
 export type Actividad = {
   id: string;
   cursoId: string;
   nombre: string;
-  origen: "curso" | "alumno"; // "curso": la listó el curso (sin fecha); "alumno": la registró la alumna
+  origen: "curso" | "alumno"; // "curso": la listó el curso (sin fecha); "alumno": la registró el alumno
   fechaOficial: Date | null;
   fechaAlumno: Date | null;
   horaAlumno: string | null;
   semanaAlumno: number | null;
-  fuenteFecha: "estimada" | "anunciada" | null; // null: el curso la lista sin fecha y la alumna aún no puso una
+  fuenteFecha: "estimada" | "anunciada" | null; // null: el curso la lista sin fecha y el alumno aún no puso una
   calificada: boolean;
   peso: number | null; // % de la nota final, si se conoce
   nota: string;
 };
 
-export const cursos: Curso[] = [
-  { id: "redes", nombre: "Redes y Comunicaciones", nrc: "2892" },
-  { id: "fisica1", nombre: "Física 1", nrc: "1844" },
-];
+export const cursos: Curso[] = backend.cursos;
 
-// La alumna registra todas las fechas (D11). El curso solo puede listar una actividad, sin fecha.
-export const actividadesIniciales: Actividad[] = [
-  {
-    id: "pc1",
-    cursoId: "redes",
-    nombre: "Práctica Calificada 1",
-    origen: "alumno",
-    fechaOficial: null,
-    fechaAlumno: null,
-    horaAlumno: null,
-    semanaAlumno: 3,
-    fuenteFecha: "anunciada",
-    calificada: true,
-    peso: 15,
-    nota: "",
-  },
-  {
-    id: "control1",
-    cursoId: "redes",
-    nombre: "Control 1",
-    origen: "alumno",
-    fechaOficial: null,
-    fechaAlumno: null,
-    horaAlumno: null,
-    semanaAlumno: 9,
-    fuenteFecha: "estimada",
-    calificada: true,
-    peso: null,
-    nota: "",
-  },
-  {
-    id: "tf",
-    cursoId: "redes",
-    nombre: "Trabajo Final (TB2 y DD1)",
-    origen: "alumno",
-    fechaOficial: null,
-    fechaAlumno: null,
-    horaAlumno: null,
-    semanaAlumno: 7,
-    fuenteFecha: "anunciada",
-    calificada: true,
-    peso: 20,
-    nota: "",
-  },
-  {
-    id: "lab5",
-    cursoId: "fisica1",
-    nombre: "Laboratorio 5",
-    origen: "alumno",
-    fechaOficial: null,
-    fechaAlumno: new Date(2026, 9, 30, 23, 59),
-    horaAlumno: "23:59",
-    semanaAlumno: null,
-    fuenteFecha: "estimada",
-    calificada: false,
-    peso: null,
-    nota: "",
-  },
-  {
-    id: "parcial",
-    cursoId: "redes",
-    nombre: "Examen parcial",
-    origen: "curso",
-    fechaOficial: null,
-    fechaAlumno: null,
-    horaAlumno: null,
-    semanaAlumno: null,
-    fuenteFecha: null,
-    calificada: true,
-    peso: null,
-    nota: "",
-  },
-  {
-    id: "foro",
-    cursoId: "fisica1",
-    nombre: "Foro obligatorio",
-    origen: "alumno",
-    fechaOficial: null,
-    fechaAlumno: null,
-    horaAlumno: null,
-    semanaAlumno: 10,
-    fuenteFecha: "anunciada",
-    calificada: false,
-    peso: null,
-    nota: "",
-  },
-];
+export const actividadesIniciales: Actividad[] = backend.sinFechaOficial;
+
+// "Hoy" del prototipo: fijo, para que la demo muestre siempre lo mismo.
+export const HOY = backend.hoy;
 
 export const semanaDe = (a: Actividad) => a.semanaAlumno ?? (a.fechaAlumno ? semanaDeFecha(a.fechaAlumno) : null);
 
-/* ---------- Semanas del ciclo ----------
-   El ciclo empieza el lunes 21/09/2026, como el Módulo A de Carmen, y dura 16 semanas. */
-export const INICIO_CICLO = new Date(2026, 8, 21);
-export const semanas = Array.from({ length: 16 }, (_, i) => i + 1);
+/* ---------- Semanas del módulo vigente ----------
+   La "Semana N" de toda la app es la semana del módulo (backend.periodo). */
+export const INICIO_CICLO = backend.periodo.inicio;
+export const semanas = Array.from({ length: backend.periodo.semanas }, (_, i) => i + 1);
 const DIA_MS = 864e5;
 const soloDia = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
@@ -178,125 +94,71 @@ export function combinarFecha(fecha: string, hora: string): Date | null {
 export const esEvaluacion = (a: Actividad) => a.calificada;
 
 /* =========================================================
-   Pantalla de Carmen (HU-04 · Evaluaciones por realizar)
-   Copiado de daniela-hu04-hu10/js/datos.js. User persona: Daniela Torres.
+   Evaluaciones (diseño de Carmen) y Actividades (de Giancarlos): leen backend.pendientes
+   y backend.completadas.
    ========================================================= */
 
-// Fecha de referencia del prototipo de Carmen: lunes 05/10/2026, 15:00.
-export const HU04_FECHA_HOY = new Date(2026, 9, 5, 15, 0);
+export const HU04_FECHA_HOY = HOY;
 
-export const HU04_ESTUDIANTE = { periodo: "2026-2", moduloActual: "Módulo A" };
+export const HU04_ESTUDIANTE = { periodo: backend.periodo.nombre, moduloActual: backend.periodo.modulo };
 
-export const HU04_MODULO_A_FIN = new Date(2026, 10, 15);
+export const HU04_MODULO_A_FIN = backend.periodo.fin;
 
-export const HU04_COMPONENTES: Record<string, { nombre: string; peso: number }> = {
-  TB1: { nombre: "Trabajo 1", peso: 20 },
-  PC1: { nombre: "Práctica Calificada 1", peso: 15 },
-  TB2: { nombre: "Trabajo 2", peso: 15 },
-  PC2: { nombre: "Práctica Calificada 2", peso: 15 },
-  DD1: { nombre: "Evaluación de Desempeño 1", peso: 15 },
-  EB1: { nombre: "Evaluación Final 1", peso: 20 },
-};
+export type Hu01Curso = { nombre: string; tono: Curso["tono"] };
 
-/* Crea una fecha a partir de 'AAAA-MM-DD HH:MM' */
-function f(texto: string) {
-  const [d, h = "23:59"] = texto.split(" ");
-  const [a, m, dia] = d.split("-").map(Number);
-  const [hh, mm] = h.split(":").map(Number);
-  return new Date(a, m - 1, dia, hh, mm);
+export type Hu01Actividad = { id: string; plazo: string; urgente: boolean; fecha: string; titulo: string; curso: Hu01Curso; peso: string | null; calificada: boolean };
+
+// Pendiente del módulo con fecha oficial: los del backend y los que el alumno marca como Oficial.
+export type Pendiente = PendienteBackend & { id: string; calificada: boolean };
+
+export function pendientesDelModulo(actividades: Actividad[]): Pendiente[] {
+  const delCurso = backend.pendientes.map((p) => ({ ...p, id: `${p.cursoId}-${p.titulo}`, calificada: p.peso != null }));
+  const oficiales = actividades
+    .filter((a) => a.fechaOficial != null)
+    .map((a) => ({ id: a.id, cursoId: a.cursoId, titulo: a.nombre, vence: a.fechaOficial as Date, peso: a.peso, publicado: HOY, calificada: a.calificada }));
+  return [...delCurso, ...oficiales].sort((a, b) => a.vence.getTime() - b.vence.getTime());
 }
 
-export type Hu04Curso = {
-  id: string;
-  nombre: string;
-  profesor: string;
-  nrc: string;
-  modulo: "A" | "B";
-  evaluaciones: { tipo: string; fecha: Date; publicado: Date; nota: number | null }[];
-  actividadesSinPeso: { titulo: string; fecha: Date; publicado: Date }[];
-};
+const DIAS_LARGOS = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+const MESES_LARGOS = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+const diasEntre = (a: Date, b: Date) => Math.round((soloDia(b).getTime() - soloDia(a).getTime()) / DIA_MS);
 
-export const HU04_CURSOS: Hu04Curso[] = [
-  {
-    id: "ux", nombre: "Diseño y tecnologías UX", profesor: "Prof. Mariana Torres", nrc: "19608", modulo: "A",
-    evaluaciones: [
-      { tipo: "TB1", fecha: f("2026-10-01 23:59"), publicado: f("2026-09-21"), nota: 18 },
-      { tipo: "PC1", fecha: f("2026-10-03 18:00"), publicado: f("2026-09-21"), nota: 18 },
-      { tipo: "TB2", fecha: f("2026-10-19 23:59"), publicado: f("2026-10-01"), nota: null },
-      { tipo: "PC2", fecha: f("2026-10-26 18:00"), publicado: f("2026-10-01"), nota: null },
-      { tipo: "DD1", fecha: f("2026-11-06 23:59"), publicado: f("2026-10-01"), nota: null },
-      { tipo: "EB1", fecha: f("2026-11-13 23:59"), publicado: f("2026-10-01"), nota: null },
-    ],
-    actividadesSinPeso: [{ titulo: "Avance de TB2 (entrega parcial)", fecha: f("2026-10-08 20:00"), publicado: f("2026-10-01") }],
-  },
-  {
-    id: "dbd", nombre: "Diseño de Base de Datos", profesor: "Prof. Carlos Mendoza", nrc: "20741", modulo: "A",
-    evaluaciones: [
-      { tipo: "PC1", fecha: f("2026-10-03 11:00"), publicado: f("2026-09-21"), nota: 20 },
-      { tipo: "TB1", fecha: f("2026-10-05 23:59"), publicado: f("2026-09-21"), nota: null },
-      { tipo: "TB2", fecha: f("2026-10-20 23:59"), publicado: f("2026-10-02"), nota: null },
-      { tipo: "PC2", fecha: f("2026-10-27 11:00"), publicado: f("2026-10-02"), nota: null },
-      { tipo: "DD1", fecha: f("2026-11-06 23:59"), publicado: f("2026-10-02"), nota: null },
-      { tipo: "EB1", fecha: f("2026-11-12 23:59"), publicado: f("2026-10-02"), nota: null },
-    ],
-    actividadesSinPeso: [],
-  },
-  {
-    id: "md", nombre: "Matemática Discreta", profesor: "Prof. Andrés Salazar", nrc: "18432", modulo: "A",
-    evaluaciones: [
-      { tipo: "TB1", fecha: f("2026-10-02 23:59"), publicado: f("2026-09-21"), nota: 18 },
-      { tipo: "PC1", fecha: f("2026-10-05 18:00"), publicado: f("2026-09-28"), nota: null },
-      { tipo: "TB2", fecha: f("2026-10-21 23:59"), publicado: f("2026-10-02"), nota: null },
-      { tipo: "PC2", fecha: f("2026-10-28 18:00"), publicado: f("2026-10-02"), nota: null },
-      { tipo: "DD1", fecha: f("2026-11-05 23:59"), publicado: f("2026-10-02"), nota: null },
-      { tipo: "EB1", fecha: f("2026-11-13 18:00"), publicado: f("2026-10-02"), nota: null },
-    ],
-    actividadesSinPeso: [],
-  },
-];
+// Pendientes agrupados como en la pantalla de Giancarlos: Hoy, Esta semana (hasta el domingo) y Próximas semanas.
+export function gruposPendientes(actividades: Actividad[]): { titulo: string; rango: string; actividades: Hu01Actividad[] }[] {
+  const hoy = soloDia(HOY);
+  const domingo = new Date(hoy);
+  domingo.setDate(hoy.getDate() + ((7 - hoy.getDay()) % 7));
+  const manana = new Date(hoy);
+  manana.setDate(hoy.getDate() + 1);
+  const lunes = new Date(domingo);
+  lunes.setDate(domingo.getDate() + 1);
 
-/* =========================================================
-   Pantalla de Giancarlos (HU-01 · Actividades), datos de ejemplo de Figma.
-   Estáticos: la lista no tiene lógica.
-   ========================================================= */
-
-export type Hu01Curso = { nombre: string; fondo: string; texto: string };
-const HU01_CURSOS = {
-  md: { nombre: "Matemática Discreta", fondo: "#eef2ff", texto: "#4338ca" },
-  ux: { nombre: "Diseño UX", fondo: "#fbeff5", texto: "#9d3b72" },
-  bd: { nombre: "Base de Datos", fondo: "#e8f7f8", texto: "#087f8c" },
-  p2: { nombre: "Programación II", fondo: "#eaf5ef", texto: "#267052" },
-  mi: { nombre: "Metodología de la Investigación", fondo: "#fbf3e4", texto: "#916018" },
-} satisfies Record<string, Hu01Curso>;
-
-export type Hu01Actividad = { plazo: string; urgente: boolean; fecha: string; titulo: string; curso: Hu01Curso; peso: string };
-
-export const HU01_GRUPOS: { titulo: string; rango: string; actividades: Hu01Actividad[] }[] = [
-  {
-    titulo: "Hoy",
-    rango: "Jueves, 8 de octubre",
-    actividades: [
-      { plazo: "Vence hoy a las 18:00", urgente: true, fecha: "8 oct · 18:00", titulo: "PC1 - Práctica Calificada 1", curso: HU01_CURSOS.md, peso: "15%" },
-      { plazo: "Vence hoy a las 23:59", urgente: true, fecha: "8 oct · 23:59", titulo: "TB1 - Trabajo 1", curso: HU01_CURSOS.ux, peso: "20%" },
-    ],
-  },
-  {
-    titulo: "Esta semana",
-    rango: "Del 9 al 11 de octubre",
-    actividades: [
-      { plazo: "Vence mañana", urgente: false, fecha: "9 oct · 20:00", titulo: "Laboratorio 3 - Modelo relacional", curso: HU01_CURSOS.bd, peso: "10%" },
-      { plazo: "Vence en 2 días", urgente: false, fecha: "10 oct · 18:00", titulo: "PC1 - Estructuras de datos", curso: HU01_CURSOS.p2, peso: "15%" },
-      { plazo: "Vence en 3 días", urgente: false, fecha: "11 oct · 23:59", titulo: "TB1 - Planteamiento del problema", curso: HU01_CURSOS.mi, peso: "15%" },
-    ],
-  },
-  {
-    titulo: "Próximas semanas",
-    rango: "Desde el 12 de octubre",
-    actividades: [
-      { plazo: "Vence en 5 días", urgente: false, fecha: "13 oct · 23:59", titulo: "Tarea 4 - Relaciones y funciones", curso: HU01_CURSOS.md, peso: "5%" },
-      { plazo: "Vence en 7 días", urgente: false, fecha: "15 oct · 23:59", titulo: "TB2 - Prototipo de alta fidelidad", curso: HU01_CURSOS.ux, peso: "25%" },
-      { plazo: "Vence en 12 días", urgente: false, fecha: "20 oct · 18:00", titulo: "PC2 - Consultas SQL", curso: HU01_CURSOS.bd, peso: "20%" },
-      { plazo: "Vence en 15 días", urgente: false, fecha: "23 oct · 23:59", titulo: "Proyecto - Avance de implementación", curso: HU01_CURSOS.p2, peso: "20%" },
-    ],
-  },
-];
+  const fila = (p: Pendiente): Hu01Actividad => {
+    const curso = cursoPorId(p.cursoId);
+    const dias = diasEntre(HOY, p.vence);
+    return {
+      id: p.id,
+      plazo: dias === 0 ? `Vence hoy a las ${dos(p.vence.getHours())}:${dos(p.vence.getMinutes())}` : dias === 1 ? "Vence mañana" : `Vence en ${dias} días`,
+      urgente: dias === 0,
+      fecha: `${p.vence.getDate()} ${MESES[p.vence.getMonth()]} · ${dos(p.vence.getHours())}:${dos(p.vence.getMinutes())}`,
+      titulo: p.titulo,
+      curso: { nombre: curso.nombre, tono: curso.tono },
+      peso: p.peso != null ? `${p.peso}%` : null,
+      calificada: p.calificada,
+    };
+  };
+  const pendientes = pendientesDelModulo(actividades);
+  const deHoy = pendientes.filter((p) => diasEntre(HOY, p.vence) === 0);
+  const deSemana = pendientes.filter((p) => diasEntre(HOY, p.vence) > 0 && soloDia(p.vence) <= domingo);
+  const proximas = pendientes.filter((p) => soloDia(p.vence) > domingo);
+  const delMes = (d: Date) => `${d.getDate()} de ${MESES_LARGOS[d.getMonth()]}`;
+  const rangoSemana =
+    manana.getMonth() === domingo.getMonth()
+      ? `Del ${manana.getDate()} al ${delMes(domingo)}`
+      : `Del ${delMes(manana)} al ${delMes(domingo)}`;
+  return [
+    { titulo: "Hoy", rango: `${DIAS_LARGOS[hoy.getDay()]}, ${delMes(hoy)}`, actividades: deHoy.map(fila) },
+    { titulo: "Esta semana", rango: rangoSemana, actividades: deSemana.map(fila) },
+    { titulo: "Próximas semanas", rango: `Desde el ${delMes(lunes)}`, actividades: proximas.map(fila) },
+  ];
+}

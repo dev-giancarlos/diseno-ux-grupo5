@@ -1,5 +1,5 @@
 import { Badge, Boton, Icono } from "@/components/ui";
-import { cursoPorId, fechaAlumnoTexto, semanaDe, semanaDeFecha, type Actividad } from "@/data";
+import { cursoPorId, fechaAlumnoTexto, HOY, semanaDe, semanaDeFecha, type Actividad } from "@/data";
 
 type FilaProps = {
   actividad: Actividad;
@@ -14,7 +14,7 @@ const TIPOS = {
 } as const;
 
 function cercania(a: Actividad) {
-  const hoy = semanaDeFecha(new Date());
+  const hoy = semanaDeFecha(HOY);
   const semana = semanaDe(a);
   if (hoy == null || semana == null) return null;
   if (semana === hoy) return "Esta semana";

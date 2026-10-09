@@ -3,7 +3,8 @@
 // reescribía el DOM ahora es estado del componente. Solo se porta el contenido: el sidebar es el de la app.
 import { useRef, useState } from "react";
 import { Alerta } from "@/components/ui";
-import { esEvaluacion, HU04_COMPONENTES, HU04_CURSOS, HU04_ESTUDIANTE, HU04_FECHA_HOY, HU04_MODULO_A_FIN, sinFechaOficial, type Actividad, type Hu04Curso } from "@/data";
+import { backend } from "@/backend";
+import { cursoPorId, esEvaluacion, HU04_ESTUDIANTE, HU04_FECHA_HOY, HU04_MODULO_A_FIN, pendientesDelModulo, sinFechaOficial, type Actividad, type Curso } from "@/data";
 import { hrefSinFecha } from "@/rutas";
 import "./evaluaciones/estilos-carmen.css";
 
@@ -70,31 +71,28 @@ function proximoRecordatorio(fecha: Date, rec: Recordatorios) {
   return mismoDia(r, FECHA_HOY) ? `hoy ${hora(r)}` : `${DIAS[r.getDay()]} ${fechaCorta(r)}, ${hora(r)}`;
 }
 
-/* Junta evaluaciones y actividades sin peso de los cursos del módulo vigente */
-type Item = { titulo: string; curso: Hu04Curso; fecha: Date; publicado: Date; peso: number | null; completada: boolean };
-function obtenerActividades(): Item[] {
-  const lista: Item[] = [];
-  HU04_CURSOS.filter((c) => c.modulo === "A").forEach((c) => {
-    c.evaluaciones.forEach((e) =>
-      lista.push({
-        titulo: `${e.tipo} · ${HU04_COMPONENTES[e.tipo].nombre}`, curso: c, fecha: e.fecha,
-        publicado: e.publicado, peso: HU04_COMPONENTES[e.tipo].peso, completada: e.nota !== null,
-      }),
-    );
-    c.actividadesSinPeso.forEach((a) =>
-      lista.push({ titulo: a.titulo, curso: c, fecha: a.fecha, publicado: a.publicado, peso: null, completada: false }),
-    );
+/* Evaluaciones del módulo vigente: las actividades calificadas, pendientes y completadas */
+type Item = { id: string; titulo: string; curso: Curso; fecha: Date; publicado: Date; peso: number | null; completada: boolean };
+// Incluye las actividades calificadas que el alumno marcó como Oficial.
+function obtenerActividades(actividades: Actividad[]): Item[] {
+  const item = (p: (typeof backend.pendientes)[number] & { id?: string }, completada: boolean): Item => ({
+    id: p.id ?? `${p.cursoId}-${p.titulo}`, titulo: p.titulo, curso: cursoPorId(p.cursoId), fecha: p.vence, publicado: p.publicado, peso: p.peso, completada,
   });
+  const lista = [
+    ...pendientesDelModulo(actividades).filter((p) => p.calificada).map((p) => item(p, false)),
+    ...backend.completadas.map((p) => item(p, true)),
+  ];
   return lista.sort((a, b) => a.fecha.getTime() - b.fecha.getTime());
 }
 
-const textoPeso = (a: Item) => (a.peso ? `${a.peso}% nota final` : "Sin peso en la nota");
+// Aquí solo hay evaluaciones (calificadas): sin peso significa que el % aún no se conoce.
+const textoPeso = (a: Item) => (a.peso ? `${a.peso}% nota final` : "Peso por confirmar");
 
-function TarjetaActividad({ a, rec }: { a: Item; rec: Recordatorios }) {
+function TarjetaActividad({ a, rec, resaltada }: { a: Item; rec: Recordatorios; resaltada: boolean }) {
   const t = tiempoRestante(a.fecha);
   const r = proximoRecordatorio(a.fecha, rec);
   return (
-    <article className="card actividad">
+    <article className={`card actividad${resaltada ? " fila-resaltada" : ""}`}>
       <div className="actividad__info">
         <h3 className="actividad__titulo">{a.titulo}</h3>
         <span className="texto-sec">
@@ -122,9 +120,9 @@ function TarjetaActividad({ a, rec }: { a: Item; rec: Recordatorios }) {
   );
 }
 
-function FilaProxima({ a }: { a: Item }) {
+function FilaProxima({ a, resaltada = false }: { a: Item; resaltada?: boolean }) {
   return (
-    <div className="proxima">
+    <div className={`proxima${resaltada ? " fila-resaltada" : ""}`}>
       <div className="proxima__info">
         <p className="proxima__titulo">{a.titulo}</p>
         <span className="texto-sec">{a.curso.nombre}</span>
@@ -140,12 +138,13 @@ function FilaProxima({ a }: { a: Item }) {
 
 const PROXIMAS_VISIBLES = 3;
 
-function VistaPorRealizar({ pendientes, rec, mostrarTodas, onVerTodas }: { pendientes: Item[]; rec: Recordatorios; mostrarTodas: boolean; onVerTodas: () => void }) {
+function VistaPorRealizar({ pendientes, rec, mostrarTodas, onVerTodas, resaltado }: { pendientes: Item[]; rec: Recordatorios; mostrarTodas: boolean; onVerTodas: () => void; resaltado: string | null }) {
   const finSemana = finDeSemana(FECHA_HOY);
   const hoy = pendientes.filter((a) => mismoDia(a.fecha, FECHA_HOY));
   const semana = pendientes.filter((a) => !mismoDia(a.fecha, FECHA_HOY) && a.fecha <= finSemana);
   const proximas = pendientes.filter((a) => a.fecha > finSemana);
-  const visibles = mostrarTodas ? proximas : proximas.slice(0, PROXIMAS_VISIBLES);
+  // La fila recién agregada siempre se ve, aunque quede después de las primeras.
+  const visibles = mostrarTodas || proximas.slice(PROXIMAS_VISIBLES).some((a) => a.id === resaltado) ? proximas : proximas.slice(0, PROXIMAS_VISIBLES);
   const restantes = proximas.length - PROXIMAS_VISIBLES;
 
   const grupo = (titulo: string, items: Item[]) =>
@@ -154,7 +153,7 @@ function VistaPorRealizar({ pendientes, rec, mostrarTodas, onVerTodas }: { pendi
         <h2 className="titulo-seccion">{titulo}</h2>
         <div className="lista-actividades">
           {items.map((a) => (
-            <TarjetaActividad key={a.titulo + a.curso.id} a={a} rec={rec} />
+            <TarjetaActividad key={a.id} a={a} rec={rec} resaltada={a.id === resaltado} />
           ))}
         </div>
       </>
@@ -169,14 +168,14 @@ function VistaPorRealizar({ pendientes, rec, mostrarTodas, onVerTodas }: { pendi
           <h2 className="titulo-seccion">Próximas semanas</h2>
           <section className="card card--lista">
             {visibles.map((a) => (
-              <FilaProxima key={a.titulo + a.curso.id} a={a} />
+              <FilaProxima key={a.id} a={a} resaltada={a.id === resaltado} />
             ))}
           </section>
           {restantes > 0 && (
             <button className="btn-enlace" id="ver-todas" type="button" onClick={onVerTodas}>
               {mostrarTodas
                 ? "Mostrar menos"
-                : `+ ${restantes} evaluaciones más hasta el fin del módulo (${fechaCorta(HU04_MODULO_A_FIN)}) · Ver todas →`}
+                : `+ ${restantes} ${restantes === 1 ? "evaluación" : "evaluaciones"} más hasta el fin del módulo (${fechaCorta(HU04_MODULO_A_FIN)}) · Ver todas →`}
             </button>
           )}
         </>
@@ -209,10 +208,10 @@ function VistaCompletadas({ completadas }: { completadas: Item[] }) {
 
 type Pestana = "pendientes" | "completadas" | "vencidas" | "historial";
 
-export default function Evaluaciones({ actividades }: { actividades: Actividad[] }) {
+export default function Evaluaciones({ actividades, resaltado }: { actividades: Actividad[]; resaltado: string | null }) {
   // Aviso de HU-05: misma fuente que la pantalla Sin fecha oficial, solo evaluaciones.
   const sinFecha = sinFechaOficial(actividades).filter(esEvaluacion).length;
-  const todas = obtenerActividades();
+  const todas = obtenerActividades(actividades);
   const pendientes = todas.filter((a) => !a.completada && a.fecha >= FECHA_HOY);
   const completadas = todas.filter((a) => a.completada).reverse();
   const vencidas = todas.filter((a) => !a.completada && a.fecha < FECHA_HOY);
@@ -291,7 +290,7 @@ export default function Evaluaciones({ actividades }: { actividades: Actividad[]
 
       <div id="panel" role="tabpanel" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         {pestana === "pendientes" && (
-          <VistaPorRealizar pendientes={pendientes} rec={rec} mostrarTodas={mostrarTodas} onVerTodas={() => setMostrarTodas((v) => !v)} />
+          <VistaPorRealizar pendientes={pendientes} rec={rec} mostrarTodas={mostrarTodas} onVerTodas={() => setMostrarTodas((v) => !v)} resaltado={resaltado} />
         )}
         {pestana === "completadas" && <VistaCompletadas completadas={completadas} />}
         {pestana === "vencidas" && <div className="card vacio">No tienes evaluaciones vencidas en este módulo.</div>}

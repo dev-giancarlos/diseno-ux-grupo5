@@ -268,12 +268,16 @@ function Activities() {
           </p>
         </div>
         <div className="heading-actions">
-          <button className="link-button" type="button">
-            Sin fecha oficial <span>5</span>
-            <img src={icons.chevron} alt="" />
-          </button>
           <button className="primary-button" type="button">
-            <img src={icons.addCalendar} alt="" />
+            {/* Mismo ícono que el botón "Agregar actividad" de la app TB2 (lucide calendar-plus). */}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M16 18h6" />
+              <path d="M16 2v3" />
+              <path d="M19 15v6" />
+              <path d="M21 11.5V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h8.3" />
+              <path d="M3 9h18" />
+              <path d="M8 2v3" />
+            </svg>
             Agregar actividad
           </button>
         </div>
@@ -290,6 +294,12 @@ function Activities() {
           <h2>Todas mis actividades pendientes</h2>
           <span className="count-badge">9</span>
         </div>
+        <p className="sin-fecha-linea">
+          No incluye 6 actividades que aún no tienen fecha oficial.
+          <a href="../../diego-hu03-hu05/tb2/#/actividades/sin-fecha">
+            Ver <img src={icons.chevron} alt="" />
+          </a>
+        </p>
 
         <div className="filters">
           <label>

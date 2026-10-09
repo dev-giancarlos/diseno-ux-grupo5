@@ -112,3 +112,14 @@
       0 0 0 4px var(--ring);
   }
 }
+
+/* Fila recién agregada a una lista oficial: fondo pastel que se desvanece hasta el fondo de la fila. */
+@keyframes fila-resaltada {
+  0%,
+  60% {
+    background-color: var(--success-muted);
+  }
+}
+.fila-resaltada {
+  animation: fila-resaltada 4s ease-out;
+}

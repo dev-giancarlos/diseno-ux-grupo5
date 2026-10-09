@@ -95,10 +95,11 @@ button { font-family: inherit; }
 }
 .nav a:hover { background: rgba(255, 255, 255, .06); }
 .nav a.is-activo {
+  border-radius: 0;
   background: var(--c-sidebar-activo);
-  color: #fafafa;
+  color: #f9fafb;
   font-weight: 600;
-  box-shadow: inset 3px 0 0 #fafafa;
+  box-shadow: inset 3px 0 0 #f9fafb;
 }
 .nav svg, .bottom-nav svg { width: 16px; height: 16px; flex-shrink: 0; }
 .sidebar__usuario { margin-top: auto; display: flex; align-items: center; gap: 10px; }

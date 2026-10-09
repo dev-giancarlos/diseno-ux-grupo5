@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Alerta, Campo, Icono, Input, Interruptor, Modal, ModalPieAcciones, OpcionesTarjeta, SelectorFecha, Stack } from "@/components/ui";
-import { cursoPorId, cursos, type Actividad } from "@/data";
+import { cursoPorId, cursos, HOY, type Actividad } from "@/data";
 
 // Una sola acción por fila: el tipo de fecha decide si la actividad sigue en Sin fecha oficial.
 export type ModoModal = { modo: "crear" } | { modo: "completar"; actividad: Actividad };
@@ -66,7 +66,7 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
     if (!completar && !v.nombre.trim()) e.nombre = "Escribe el nombre";
     if (oficial && !v.dia) e.cuando = "Elige el día que confirmó el docente";
     else if (!v.dia && !v.semana) e.cuando = "Elige una semana o un día";
-    else if (v.dia && v.dia < soloFecha(new Date())) e.cuando = "Elige una fecha futura";
+    else if (v.dia && v.dia < soloFecha(HOY)) e.cuando = "Elige una fecha futura";
     const peso = Number(v.peso);
     if (v.calificada && v.peso.trim() && !(peso > 0 && peso <= 100)) e.peso = "Escribe un porcentaje entre 1 y 100";
     setErrores(e);
@@ -223,33 +223,14 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
         </Stack>
 
         <Stack gap={6}>
-          <div className="flex items-center justify-between gap-4 rounded-[6px] border border-border px-4 py-3">
-            <div className="flex min-w-0 flex-col gap-[2px]">
-              <label htmlFor="m-calificada" className="cursor-pointer text-[13px] font-semibold text-foreground">
-                Es calificada
-              </label>
-              <p className="text-[12px] text-muted-foreground">{v.calificada ? "Peso en la nota final, si lo sabes" : "Suma a tu nota final"}</p>
-            </div>
-            <div className="flex shrink-0 items-center gap-3">
-              {v.calificada && (
-                <div className="relative w-[92px]">
-                  <Input
-                    id="m-peso"
-                    tipo="numero"
-                    compacto
-                    estado={errores.peso ? "error" : "normal"}
-                    valor={v.peso}
-                    marcador="Ej. 15"
-                    onCambio={set("peso")}
-                    etiquetaAria="Peso en la nota final, en porcentaje"
-                    descripcionId={errores.peso ? "m-peso-error" : undefined}
-                    refEntrada={refs.peso}
-                  />
-                  <span aria-hidden="true" className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-[13px] text-muted-foreground">
-                    %
-                  </span>
-                </div>
-              )}
+          <div className="flex flex-col gap-3 rounded-[6px] border border-border px-4 py-3">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex min-w-0 flex-col gap-[2px]">
+                <label htmlFor="m-calificada" className="cursor-pointer text-[13px] font-semibold text-foreground">
+                  Es calificada
+                </label>
+                <p className="text-[12px] text-muted-foreground">Si suma a tu nota final</p>
+              </div>
               <Interruptor
                 id="m-calificada"
                 etiqueta="Es calificada"
@@ -258,12 +239,35 @@ export default function ModalActividad({ estado, onCerrar, onGuardar }: Props) {
                 onCambio={set("calificada")}
               />
             </div>
+            {v.calificada && (
+              <div className="flex items-center justify-between gap-4">
+                <label htmlFor="m-peso" className="cursor-pointer text-[13px] text-foreground">
+                  Peso en la nota final <span className="sr-only">en porcentaje</span> (opcional)
+                </label>
+                <div className="relative w-[92px] shrink-0">
+                  <Input
+                    id="m-peso"
+                    tipo="numero"
+                    compacto
+                    estado={errores.peso ? "error" : "normal"}
+                    valor={v.peso}
+                    marcador="Ej. 15"
+                    onCambio={set("peso")}
+                    descripcionId={errores.peso ? "m-peso-error" : undefined}
+                    refEntrada={refs.peso}
+                  />
+                  <span aria-hidden="true" className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-[13px] text-muted-foreground">
+                    %
+                  </span>
+                </div>
+              </div>
+            )}
+            {errores.peso && (
+              <p id="m-peso-error" className="text-[12px] text-destructive">
+                {errores.peso}
+              </p>
+            )}
           </div>
-          {errores.peso && (
-            <p id="m-peso-error" className="text-[12px] text-destructive">
-              {errores.peso}
-            </p>
-          )}
         </Stack>
 
         <Campo id="m-nota" etiqueta="Comentarios (opcional)">
