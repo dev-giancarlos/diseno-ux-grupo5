@@ -1,0 +1,962 @@
+/* Variables de color y tipografía globales */
+:root {
+  --bg-main: #F3F4F6;
+  --bg-sidebar: #1E1E1E;
+  --sidebar-active: #333333;
+  --sidebar-text-muted: #D1D5DB;
+  --sidebar-text-active: #FFFFFF;
+  
+  --card-bg: #FFFFFF;
+  --text-main: #111827;
+  --text-muted: #4B5563;
+  --border-color: #E5E7EB;
+  --accent-color: #4338CA;
+  --accent-soft: #EEF2FF;
+  
+  --font-family: 'Inter', sans-serif;
+  --radius: 6px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  display: flex;
+  min-height: 100vh;
+}
+
+/* --- BARRA LATERAL (SIDEBAR) --- */
+.sidebar {
+  width: 220px;
+  background-color: var(--bg-sidebar);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  gap: 24px;
+}
+
+.sidebar-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 12px;
+}
+
+.sidebar-logo svg {
+  fill: #ffffff;
+  width: 32px;
+  height: 32px;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  color: var(--sidebar-text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+}
+
+.nav-item.active {
+  background-color: var(--sidebar-active);
+  color: var(--sidebar-text-active);
+  font-weight: 500;
+}
+
+.nav-item i {
+  font-size: 16px;
+}
+
+.sidebar-spacer {
+  flex: 1;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #1F2937;
+  color: #F9FAFB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  color: #F9FAFB;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.user-role {
+  color: var(--sidebar-text-muted);
+  font-size: 12px;
+}
+
+/* --- CONTENIDO PRINCIPAL --- */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ENCABEZADO DE SECCIÓN */
+.header-section {
+  background-color: var(--card-bg);
+  padding: 24px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title h1 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.header-title p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.header-date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.header-tabs {
+  display: flex;
+  gap: 16px;
+  border-bottom: 1px solid transparent;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-btn.active {
+  color: var(--text-main);
+  font-weight: 600;
+  border-bottom-color: var(--accent-color);
+}
+
+/* CUERPO Y CONTENIDOS DE CURSOS */
+.content-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filter-bar {
+  display: flex;
+  gap: 12px;
+}
+
+.search-input {
+  flex: 1;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid #6B7280;
+  border-radius: var(--radius);
+  font-size: 13px;
+  outline: none;
+}
+
+.select-filter {
+  width: 220px;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid #6B7280;
+  border-radius: var(--radius);
+  font-size: 13px;
+  background-color: var(--card-bg);
+  color: var(--text-muted);
+  outline: none;
+  cursor: pointer;
+}
+
+.section-summary {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.count-label {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.courses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* TARJETA DE CURSO */
+.course-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.course-indicator {
+  width: 4px;
+  background-color: var(--accent-color);
+  border-radius: 2px;
+}
+
+.course-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.course-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.course-teacher {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.course-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.course-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.btn-view-course {
+  background-color: var(--accent-soft);
+  color: var(--accent-color);
+  border: 1px solid var(--accent-color);
+  border-radius: var(--radius);
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-view-course:hover {
+  opacity: 0.8;
+}
+
+.footer-counter {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 8px 0;
+}
+/* --- BREADCRUMBS --- */
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.breadcrumb-link {
+  color: var(--accent-color);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.breadcrumb-separator {
+  color: var(--text-muted);
+}
+
+.breadcrumb-current {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+/* --- ESTRUCTURA DE 2 COLUMNAS (CONTENIDO + LATERAL) --- */
+.course-detail-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.course-main-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.course-side-column {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* --- TARJETAS DE CONTENIDO / SEMANAS --- */
+.content-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.week-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.week-card:hover {
+  background-color: #FAFAFA;
+}
+
+.week-icon {
+  font-size: 20px;
+  color: var(--text-muted);
+}
+
+.week-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.week-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  text-transform: uppercase;
+}
+
+.week-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.arrow-icon {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.section-label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+/* --- PANEL LATERAL DE PENDIENTES --- */
+.pending-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pending-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.badge-count {
+  background-color: var(--text-main);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.pending-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.deliveries-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.deliveries-subtitle {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.delivery-item {
+  border: 1px solid #FEE2E2;
+  background-color: #FEF2F2;
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delivery-days {
+  color: #DC2626;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.delivery-name {
+  font-size: 12px;
+  color: var(--text-main);
+}
+
+.delivery-date {
+  color: #DC2626;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.btn-all-pending {
+  background-color: var(--accent-soft);
+  color: var(--accent-color);
+  border: 1px solid var(--accent-color);
+  border-radius: var(--radius);
+  padding: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  width: 100%;
+  cursor: pointer;
+}
+
+.later-delivery-box {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.later-days {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.later-date {
+  color: #0284C7;
+  font-size: 12px;
+  font-weight: 600;
+}
+/* --- ESTILOS DE ACORDEÓN (SEMANA DESPLEGADA) --- */
+.week-card.accordion-active {
+  background-color: var(--accent-soft);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: none;
+}
+
+.week-card.accordion-active .week-title {
+  color: var(--accent-color);
+}
+
+.week-card.accordion-active .week-icon {
+  color: var(--accent-color);
+}
+
+.accordion-content {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-top: none;
+  border-bottom-left-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Subsecciones de contenido interno */
+.content-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.content-section-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.resource-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent-color);
+  font-size: 12px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.divider {
+  height: 1px;
+  background-color: var(--border-color);
+  width: 100%;
+}
+
+.subfolder-card {
+  background-color: #F9FAFB;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* --- ESTADOS DE ALERTA Y EXPIRACIÓN (URGENTE) --- */
+.evaluation-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+}
+
+.evaluation-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.evaluation-expiry-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.text-danger {
+  color: #B91C1C;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-pending {
+  background-color: #E5E7EB;
+  color: #4B5563;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.urgent-alert-text {
+  color: #B91C1C;
+  font-size: 12px;
+  margin-top: 4px;
+}
+/* --- DASHBOARD / PANTALLA DE INICIO --- */
+.profile-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: #E6E6E6;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.profile-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.profile-meta {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* GRIDS DE MÉTRICAS (KPIs) */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.metric-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.metric-value-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.metric-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.metric-link {
+  color: var(--accent-color);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* MODALIDAD BADGES (VIRTUAL / SEMIPRESENCIAL) */
+.badge-modality {
+  display: inline-flex;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.badge-virtual {
+  background-color: #DCFCE7;
+  color: #15803D;
+}
+
+.badge-semipresencial {
+  background-color: var(--accent-soft);
+  color: var(--accent-color);
+}
+
+/* LISTA DE MÓDULOS DE CURSOS */
+.module-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.module-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.module-card-list {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.module-card-item {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.module-card-item:last-child {
+  border-bottom: none;
+}
+
+.module-card-item.disabled {
+  opacity: 0.6;
+}
+
+.course-item-icon {
+  font-size: 18px;
+  color: var(--text-muted);
+}
+/* --- MODAL DE PENDIENTES (SUPERPOSICIÓN) --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  width: 520px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-title-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-title-box h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.btn-close-modal {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-course-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.modal-date-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+/* CARDS DE PENDIENTES EN MODAL CON CODIFICACIÓN DE COLOR */
+.pending-card-item {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.pending-card-body {
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background-color: #ffffff;
+}
+
+.pending-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-top: 4px;
+}
+
+.pending-banner {
+  padding: 6px 16px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* NIVELES DE ALERTA POR COLOR */
+/* Rojo - 1 día */
+.urgency-red .pending-days,
+.urgency-red .pending-date {
+  color: #DC2626;
+  font-weight: 600;
+  font-size: 12px;
+}
+.urgency-red .pending-banner {
+  background-color: #FEF2F2;
+  color: #991B1B;
+}
+
+/* Naranja - 8 días */
+.urgency-orange .pending-days,
+.urgency-orange .pending-date {
+  color: #D97706;
+  font-weight: 600;
+  font-size: 12px;
+}
+.urgency-orange .pending-banner {
+  background-color: #FFFBEB;
+  color: #92400E;
+}
+
+/* Amarillo - 10 días */
+.urgency-yellow .pending-days,
+.urgency-yellow .pending-date {
+  color: #CA8A04;
+  font-weight: 600;
+  font-size: 12px;
+}
+.urgency-yellow .pending-banner {
+  background-color: #FEFCE8;
+  color: #854D0E;
+}
+
+/* Celeste - 30 días */
+.urgency-blue .pending-days,
+.urgency-blue .pending-date {
+  color: #0284C7;
+  font-weight: 600;
+  font-size: 12px;
+}
+.urgency-blue .pending-banner {
+  background-color: #F0F9FF;
+  color: #075985;
+}
+
+.modal-footer {
+  padding: 16px 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn-close-action {
+  width: 100%;
+  padding: 10px;
+  background-color: #ffffff;
+  border: 1px solid #D1D5DB;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.btn-close-action:hover {
+  background-color: #F9FAFB;
+}
+.sidebar-logo-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blackboard Learn - Inicio</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+
+  <!-- NAVEGACIÓN LATERAL -->
+  <aside class="sidebar">
+  <div class="sidebar-logo">
+    <img src="logo-upc.png" alt="Logotipo UPC" class="sidebar-logo-img">
+  </div>
+
+    <nav class="sidebar-menu">
+      <a href="inicio.html" class="nav-item active"><i class="bi bi-house"></i> Inicio</a>
+      <a href="index.html" class="nav-item"><i class="bi bi-journal-bookmark"></i> Cursos</a>
+      <a href="#" class="nav-item"><i class="bi bi-activity"></i> Actividad</a>
+      <a href="#" class="nav-item"><i class="bi bi-bell"></i> Notificaciones</a>
+      <a href="#" class="nav-item"><i class="bi bi-calendar3"></i> Calendario</a>
+      <a href="#" class="nav-item"><i class="bi bi-award"></i> Calificaciones</a>
+      <a href="#" class="nav-item"><i class="bi bi-chat-dots"></i> Mensajes</a>
+    </nav>
+
+    <div class="sidebar-spacer"></div>
+
+    <div class="user-profile">
+      <div class="avatar">GG</div>
+      <div class="user-info">
+        <span class="user-name">Gabriela Garcia</span>
+        <span class="user-role">Estudiante</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="main-content">
+    <section class="content-body" style="gap: 16px;">
+      
+      <h1 style="font-size: 24px; font-weight: 600;">Inicio</h1>
+
+      <!-- TARJETA DEL ESTUDIANTE -->
+      <div class="profile-card">
+        <div class="profile-avatar">GG</div>
+        <div class="profile-details">
+          <span class="profile-name">Gabriela Garcia</span>
+          <span class="profile-meta">Código: U202312345</span>
+          <span class="profile-meta">u202312345@upc.edu.pe</span>
+        </div>
+      </div>
+
+      <!-- TARJETAS DE MÉTRICAS -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <span class="metric-label">Periodo Actual</span>
+          <span class="metric-value">2026-2 · Módulo A</span>
+        </div>
+
+        <div class="metric-card">
+          <span class="metric-label">Cursos Aprobados</span>
+          <span class="metric-value">15</span>
+        </div>
+
+        <div class="metric-card">
+          <span class="metric-label">Promedio General</span>
+          <div class="metric-value-row">
+            <span class="metric-value">18.67</span>
+            <a href="#" class="metric-link">Ver calificaciones &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ENCABEZADO MIS CURSOS -->
+      <div class="section-summary" style="margin-top: 8px;">
+        <span style="font-size: 16px;">Mis cursos actuales</span>
+        <a href="index.html" class="metric-link">Ver todos</a>
+      </div>
+
+      <!-- MÓDULO A -->
+      <div class="module-group">
+        <span class="module-tag">Módulo A · En curso</span>
+        <div class="module-card-list">
+          
+          <div class="module-card-item">
+            <i class="bi bi-journal-text course-item-icon"></i>
+            <div class="course-info">
+              <span class="course-title" style="font-size: 15px;">Diseño y tecnologías UX</span>
+              <span class="badge-modality badge-virtual">VIRTUAL</span>
+              <span class="course-teacher">Prof. Mariana Torres</span>
+            </div>
+          </div>
+
+          <div class="module-card-item">
+            <i class="bi bi-journal-text course-item-icon"></i>
+            <div class="course-info">
+              <span class="course-title" style="font-size: 15px;">Diseño de Base de Datos</span>
+              <span class="badge-modality badge-semipresencial">SEMIPRESENCIAL</span>
+              <span class="course-teacher">Prof. Carlos Mendoza</span>
+            </div>
+          </div>
+
+          <div class="module-card-item">
+            <i class="bi bi-journal-text course-item-icon"></i>
+            <div class="course-info">
+              <span class="course-title" style="font-size: 15px;">Matemática Discreta</span>
+              <span class="badge-modality badge-virtual">VIRTUAL</span>
+              <span class="course-teacher">Prof. Andrés Salazar</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- MÓDULO B (FUTURO) -->
+      <div class="module-group">
+        <span class="module-tag">Módulo B · Inicia el 16/11/2026</span>
+        <div class="module-card-list">
+          
+          <div class="module-card-item disabled">
+            <i class="bi bi-journal-text course-item-icon"></i>
+            <div class="course-info">
+              <span class="course-title" style="font-size: 15px;">Ingeniería de Requerimientos</span>
+              <span class="badge-modality badge-virtual">VIRTUAL</span>
+              <span class="course-teacher">Prof. Ricardo Salas</span>
+            </div>
+          </div>
+
+          <div class="module-card-item disabled">
+            <i class="bi bi-journal-text course-item-icon"></i>
+            <div class="course-info">
+              <span class="course-title" style="font-size: 15px;">Implementación de Base de Datos</span>
+              <span class="badge-modality badge-semipresencial">SEMIPRESENCIAL</span>
+              <span class="course-teacher">Prof. Carmen Vidal</span>
+            </div>
+          </div>
+
+          <div class="module-card-item disabled">
+            <i class="bi bi-journal-text course-item-icon"></i>
+            <div class="course-info">
+              <span class="course-title" style="font-size: 15px;">Cálculo II</span>
+              <span class="badge-modality badge-virtual">VIRTUAL</span>
+              <span class="course-teacher">Prof. Jorge Quispe</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+  </main>
+<script src="app.js"></script>
+</body>
+</html>
