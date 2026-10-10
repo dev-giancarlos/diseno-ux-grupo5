@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blackboard Learn - Diseño y tecnologías UX</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+
+  <!-- NAVEGACIÓN LATERAL (Misma estructura reutilizada) -->
+  <aside class="sidebar">
+  <div class="sidebar-logo">
+    <img src="logo-upc.png" alt="Logotipo UPC" class="sidebar-logo-img">
+  </div>
+
+    <nav class="sidebar-menu">
+      <a href="inicio.html" class="nav-item"><i class="bi bi-house"></i> Inicio</a>
+      <a href="index.html" class="nav-item active"><i class="bi bi-journal-bookmark"></i> Cursos</a>
+      <a href="#" class="nav-item"><i class="bi bi-activity"></i> Actividad</a>
+      <a href="#" class="nav-item"><i class="bi bi-bell"></i> Notificaciones</a>
+      <a href="#" class="nav-item"><i class="bi bi-calendar3"></i> Calendario</a>
+      <a href="#" class="nav-item"><i class="bi bi-award"></i> Calificaciones</a>
+      <a href="#" class="nav-item"><i class="bi bi-chat-dots"></i> Mensajes</a>
+    </nav>
+
+    <div class="sidebar-spacer"></div>
+
+    <div class="user-profile">
+      <div class="avatar">GG</div>
+      <div class="user-info">
+        <span class="user-name">Gabriela Garcia</span>
+        <span class="user-role">Estudiante</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="main-content">
+    
+    <!-- HEADER SUPERIOR CON BREADCRUMBS -->
+    <header class="header-section">
+      <nav class="breadcrumbs">
+        <a href="index.html" class="breadcrumb-link">Cursos</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">Contenido del curso</span>
+      </nav>
+
+      <div class="header-top">
+        <div class="header-title">
+          <h1>Diseño y tecnologías UX</h1>
+          <p>Prof. Mariana Torres · UX210 · 2026-1</p>
+        </div>
+        <div class="header-date">
+          <i class="bi bi-calendar-event"></i>
+          <span>Jueves, 04/06/2026</span>
+        </div>
+      </div>
+
+      <div class="header-tabs">
+        <button class="tab-btn active">Contenido</button>
+        <button class="tab-btn">Anuncios</button>
+        <button class="tab-btn">Calificaciones</button>
+      </div>
+    </header>
+
+    <!-- ÁREA DE CONTENIDO (DOS COLUMNAS) -->
+    <section class="content-body">
+      <div class="course-detail-layout">
+        
+        <!-- COLUMNA PRINCIPAL (CONTENIDO Y SEMANAS) -->
+        <div class="course-main-column">
+          
+          <div class="filter-bar">
+            <input type="text" class="search-input" placeholder="Buscar en el contenido">
+            <select class="select-filter">
+              <option>Todo el contenido</option>
+            </select>
+          </div>
+
+          <div class="section-summary">
+            <span>Contenido del curso</span>
+            <span class="count-label">8 semanas</span>
+          </div>
+
+          <!-- LISTA DE SEMANAS -->
+          <div class="content-list">
+            
+            <article class="week-card">
+              <i class="bi bi-folder week-icon"></i>
+              <div class="week-info">
+                <span class="week-title">SEMANA 1</span>
+                <span class="week-subtitle">Introducción al diseño UX</span>
+              </div>
+              <i class="bi bi-chevron-right arrow-icon"></i>
+            </article>
+
+            <article class="week-card">
+              <i class="bi bi-folder week-icon"></i>
+              <div class="week-info">
+                <span class="week-title">SEMANA 2</span>
+                <span class="week-subtitle">Investigación de usuarios</span>
+              </div>
+              <i class="bi bi-chevron-right arrow-icon"></i>
+            </article>
+
+            <article class="week-card">
+              <i class="bi bi-folder week-icon"></i>
+              <div class="week-info">
+                <span class="week-title">SEMANA 3</span>
+                <span class="week-subtitle">Personas y escenarios</span>
+              </div>
+              <i class="bi bi-chevron-right arrow-icon"></i>
+            </article>
+
+            <article class="week-card">
+              <i class="bi bi-folder week-icon"></i>
+              <div class="week-info">
+                <span class="week-title">SEMANA 4</span>
+                <span class="week-subtitle">Arquitectura de información</span>
+              </div>
+              <i class="bi bi-chevron-right arrow-icon"></i>
+            </article>
+
+<!-- SEMANA 5 (DESPLEGADA) -->
+<div class="accordion-item">
+  
+  <!-- Encabezado del Acordeón -->
+  <article class="week-card accordion-active">
+    <i class="bi bi-folder2-open week-icon"></i>
+    <div class="week-info">
+      <span class="week-title">SEMANA 5</span>
+      <span class="week-subtitle">Prototipado y validación</span>
+    </div>
+    <i class="bi bi-chevron-up arrow-icon"></i>
+  </article>
+
+  <!-- Panel desplegable con el contenido -->
+  <div class="accordion-content">
+    
+    <!-- Bloque 1: Antes de la clase -->
+    <div>
+      <h4 class="content-section-title">Antes de la clase</h4>
+      <p class="content-section-desc">Revisa la lectura sobre prototipado y prepara tus ideas.</p>
+      <a href="#" class="resource-link">
+        <i class="bi bi-file-earmark-pdf"></i>
+        <span>Guía de prototipado · PDF</span>
+      </a>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Bloque 2: Durante la clase -->
+    <div>
+      <h4 class="content-section-title">Durante la clase</h4>
+      <p class="content-section-desc">Taller: de los bocetos al prototipo de baja fidelidad.</p>
+      
+      <div class="subfolder-card">
+        <i class="bi bi-folder week-icon"></i>
+        <span style="flex:1; font-size: 13px; font-weight: 600;">Material de la clase</span>
+        <i class="bi bi-chevron-right arrow-icon"></i>
+      </div>
+    </div>
+
+    <!-- Bloque 3: Evaluación y Alerta en Rojo -->
+    <div>
+      <div class="evaluation-row">
+        <span class="evaluation-name">Evaluación E5</span>
+        
+        <div class="evaluation-expiry-info">
+          <span class="text-danger">
+            <i class="bi bi-clock"></i> Expira el 05/06/2026
+          </span>
+          <span class="badge-pending">
+            <i class="bi bi-clock"></i> Pendiente
+          </span>
+        </div>
+      </div>
+
+      <!-- Mensaje destacado de expiración próxima (< 24 horas) -->
+      <div class="urgent-alert-text">
+        Falta 1 día · Expiración: 05/06/2026
+      </div>
+    </div>
+
+  </div>
+</div>
+
+            <article class="week-card">
+              <i class="bi bi-folder week-icon"></i>
+              <div class="week-info">
+                <span class="week-title">SEMANA 6</span>
+                <span class="week-subtitle">Pruebas de usabilidad</span>
+              </div>
+              <i class="bi bi-chevron-right arrow-icon"></i>
+            </article>
+
+            <article class="week-card">
+              <i class="bi bi-folder week-icon"></i>
+              <div class="week-info">
+                <span class="week-title">SEMANA 7</span>
+                <span class="week-subtitle">Diseño de interfaces</span>
+              </div>
+              <i class="bi bi-chevron-right arrow-icon"></i>
+            </article>
+
+            <article class="week-card">
+              <i class="bi bi-folder week-icon"></i>
+              <div class="week-info">
+                <span class="week-title">SEMANA 8</span>
+                <span class="week-subtitle">Presentación de proyectos</span>
+              </div>
+              <i class="bi bi-chevron-right arrow-icon"></i>
+            </article>
+
+          </div>
+
+          <h3 class="section-label">Evaluaciones y proyecto</h3>
+
+          <div class="content-list">
+            <article class="week-card">
+              <i class="bi bi-folder week-icon"></i>
+              <div class="week-info">
+                <span class="week-title">Evaluaciones</span>
+                <span class="week-subtitle">Evaluaciones individuales y trabajos parciales</span>
+              </div>
+              <i class="bi bi-chevron-right arrow-icon"></i>
+            </article>
+
+            <article class="week-card">
+              <i class="bi bi-folder week-icon"></i>
+              <div class="week-info">
+                <span class="week-title">Trabajo final</span>
+                <span class="week-subtitle">Proyecto integrador · Entrega: 04/07/2026</span>
+              </div>
+              <i class="bi bi-chevron-right arrow-icon"></i>
+            </article>
+          </div>
+
+          <div class="footer-counter">
+            Contenido publicado por Prof. Mariana Torres
+          </div>
+
+        </div>
+
+        <!-- COLUMNA LATERAL (PENDIENTES) -->
+        <aside class="course-side-column">
+          
+          <div class="pending-header">
+            <span class="pending-title">Pendientes</span>
+            <span class="badge-count">3</span>
+          </div>
+          <p class="pending-subtitle">3 entregas próximas · próximos 10 días</p>
+
+          <div class="deliveries-card">
+            <span class="deliveries-subtitle">Próximas entregas</span>
+
+            <div class="delivery-item">
+              <div>
+                <div class="delivery-days">Falta 1 día</div>
+                <div class="delivery-name">Evaluacion E5</div>
+              </div>
+              <span class="delivery-date">05/06/2026</span>
+            </div>
+
+            <div class="delivery-item">
+              <div>
+                <div class="delivery-days">Faltan 8 días</div>
+                <div class="delivery-name">Evaluacion E6</div>
+              </div>
+              <span class="delivery-date">12/06/2026</span>
+            </div>
+
+            <div class="delivery-item">
+              <div>
+                <div class="delivery-days">Faltan 10 días</div>
+                <div class="delivery-name">Trabajo parcial 2</div>
+              </div>
+              <span class="delivery-date">14/06/2026</span>
+            </div>
+
+            <button class="btn-all-pending">Ver todos los pendientes</button>
+          </div>
+
+          <p class="pending-subtitle">Entrega posterior</p>
+
+          <div class="later-delivery-box">
+            <div>
+              <div class="later-days">Faltan 30 días</div>
+              <div class="delivery-name">Trabajo final</div>
+            </div>
+            <span class="later-date">04/07/2026</span>
+          </div>
+
+        </aside>
+
+      </div>
+    </section>
+  </main>
+<!-- VENTANA EMERGENTE (MODAL DE PENDIENTES) -->
+<div class="modal-overlay" id="modalPendientes">
+  <div class="modal-container">
+    
+    <!-- Encabezado del Modal -->
+    <div class="modal-header">
+      <div class="modal-title-box">
+        <h3>Pendientes</h3>
+        <span class="badge-count">3</span>
+      </div>
+      <button class="btn-close-modal" id="btnIconClose"><i class="bi bi-x-lg"></i></button>
+    </div>
+
+    <!-- Cuerpo del Modal -->
+    <div class="modal-body">
+      <div>
+        <div class="modal-course-label">Diseño y tecnologías UX</div>
+        <div class="modal-date-subtitle">Al 04/06/2026 · 3 entregas en los próximos 10 días</div>
+      </div>
+
+      <!-- Pendiente 1: Rojo (1 día) -->
+      <div class="pending-card-item urgency-red">
+        <div class="pending-card-body">
+          <div>
+            <div class="pending-days">Falta 1 día</div>
+            <div class="pending-card-title">Evaluacion E5</div>
+          </div>
+          <span class="pending-date">05/06/2026</span>
+        </div>
+        <div class="pending-banner">Entrega próxima</div>
+      </div>
+
+      <!-- Pendiente 2: Naranja (8 días) -->
+      <div class="pending-card-item urgency-orange">
+        <div class="pending-card-body">
+          <div>
+            <div class="pending-days">Faltan 8 días</div>
+            <div class="pending-card-title">Evaluacion E6</div>
+          </div>
+          <span class="pending-date">12/06/2026</span>
+        </div>
+        <div class="pending-banner">Entrega próxima</div>
+      </div>
+
+      <!-- Pendiente 3: Amarillo (10 días) -->
+      <div class="pending-card-item urgency-yellow">
+        <div class="pending-card-body">
+          <div>
+            <div class="pending-days">Faltan 10 días</div>
+            <div class="pending-card-title">Trabajo parcial 2</div>
+          </div>
+          <span class="pending-date">14/06/2026</span>
+        </div>
+        <div class="pending-banner">Entrega próxima · plazo de 10 días</div>
+      </div>
+
+      <div class="pending-subtitle" style="margin-top: 8px;">Entrega posterior</div>
+
+      <!-- Pendiente 4: Celeste (30 días) -->
+      <div class="pending-card-item urgency-blue">
+        <div class="pending-card-body">
+          <div>
+            <div class="pending-days">Faltan 30 días</div>
+            <div class="pending-card-title">Trabajo final</div>
+          </div>
+          <span class="pending-date">04/07/2026</span>
+        </div>
+        <div class="pending-banner">Entrega posterior</div>
+      </div>
+
+      <div style="font-size: 11px; color: var(--text-muted);">
+        El trabajo final no se cuenta entre las 3 entregas próximas.
+      </div>
+    </div>
+
+    <!-- Pie del Modal -->
+    <div class="modal-footer">
+      <button class="btn-close-action" id="btnTextClose">Cerrar</button>
+    </div>
+
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
