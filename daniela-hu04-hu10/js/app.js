@@ -304,7 +304,7 @@ function paginaDetalle() {
 }
 
 /* =========================================================
-   HU-04 · Actividades por realizar
+   HU-04 · Evaluaciones
    ========================================================= */
 
 /* Junta evaluaciones y actividades sin peso de los cursos del módulo vigente */
@@ -401,7 +401,7 @@ function paginaActividades() {
 
   const contenido = document.getElementById('contenido');
   contenido.innerHTML = `
-    <h1 class="titulo-pagina">Actividades por realizar</h1>
+    <h1 class="titulo-pagina">Evaluaciones</h1>
     <p class="subtitulo">Mostrando solo las evaluaciones vigentes del ${ESTUDIANTE.moduloActual} · Actualizado al ${fechaCorta(FECHA_HOY)}</p>
 
     <div class="banner" role="status">
