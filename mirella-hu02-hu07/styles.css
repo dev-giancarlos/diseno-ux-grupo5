@@ -98,8 +98,10 @@ a{text-decoration:none;color:inherit}
 .bar{position:sticky;top:0;align-self:flex-start;height:100dvh;width:48px;flex:0 0 48px;display:flex;flex-direction:column;align-items:center;padding:24px 0;background:var(--card);border-left:1px solid var(--border);cursor:pointer;z-index:30}
 .bar:hover{background:#FAFAFA}
 .bar > .ico{width:18px;height:18px;color:var(--accent)}
-.bar-mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.bar-mid{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.bar-label{position:relative;display:flex;justify-content:center}
 .bar-text{writing-mode:vertical-rl;transform:rotate(180deg);font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--accent);white-space:nowrap}
+.bar-label .count-badge{position:absolute;top:100%;left:50%;margin-top:14px;transform:translateX(-50%)}
 
 /* ---------- Panel retráctil ---------- */
 .panel{position:fixed;top:0;bottom:0;right:48px;width:min(800px,calc(100vw - 248px));background:var(--card);box-shadow:-8px 0 28px rgba(17,24,39,.15);transform:translateX(calc(100% + 48px));visibility:hidden;transition:transform .3s ease,visibility .3s;overflow-y:auto;z-index:20}
