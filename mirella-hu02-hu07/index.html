@@ -112,28 +112,30 @@
   </main>
 
 
+
   <!-- ------------------------- Yuli, Gian y Martín ------------------------- -->
   <!-- Barra vertical derecha «TODOS LOS ANUNCIOS» (retráctil) -->
-<aside class="bar" id="ann-bar" hidden role="button" tabindex="0" aria-expanded="false">
+  <aside class="bar" id="ann-bar" role="button" tabindex="0" aria-expanded="false" aria-controls="ann-panel">
     <svg class="ico" id="bar-chev"><use href="#i-left"/></svg>
-    <span class="bar-text">TODOS LOS ANUNCIOS</span>
-    <span class="badge bar-badge">4</span>
+    <div class="bar-mid">
+      <span class="bar-text">TODOS LOS ANUNCIOS</span>
+      <span class="count-badge" id="bar-badge"></span>
+    </div>
   </aside>
 
   <!-- Panel de anuncios: se despliega hacia la izquierda -->
-<section class="panel" id="ann-panel" aria-hidden="true">
+  <section class="panel" id="ann-panel" aria-hidden="true">
     <div class="panel-head">
       <h2>TODOS LOS ANUNCIOS</h2>
-      <button class="btn-soft" id="panel-close"><svg class="ico"><use href="#i-x"/></svg>Cerrar</button>
+      <button type="button" class="outline-button small" id="panel-close"><svg class="ico"><use href="#i-x"/></svg>Cerrar</button>
     </div>
     <div class="panel-sum">
-      <span class="muted">10 anuncios · Todos los cursos · Más recientes primero</span>
-      <span class="unread-count"><svg class="ico sm"><use href="#i-mail"/></svg>4 no leídos</span>
+      <span id="ann-sum"></span>
+      <span class="unread-count"><svg class="ico"><use href="#i-mail"/></svg><span id="ann-unread"></span></span>
     </div>
     <div id="announcements"></div>
-    <p class="panel-foot">Mostrando 10 de 10 anuncios · Recepción hasta el 04/10/2026, 08:00</p>
+    <p class="panel-foot" id="ann-foot"></p>
   </section>
-
 
   <!-- ------------------------- Yuli, Gian y Martín ------------------------- -->
 
