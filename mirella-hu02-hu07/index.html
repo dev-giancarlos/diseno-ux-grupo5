@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UPC - Aula virtual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Íconos (lucide) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></symbol>
+    <symbol id="i-activity" viewBox="0 0 24 24"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></symbol>
+    <symbol id="i-clip" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><path d="M8 2v4M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></symbol>
+    <symbol id="i-award" viewBox="0 0 24 24"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/></symbol>
+    <symbol id="i-msg" viewBox="0 0 24 24"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-calplus" viewBox="0 0 24 24"><path d="M16 19h6M16 2v4M19 16v6M21 12.598V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8.5M3 10h18M8 2v4"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+  </defs>
+</svg>
+
+<div class="app-shell">
+
+  <!-- Encabezado móvil -->
+  <header class="mobile-header">
+    <img src="assets/logo-upc-blanco.svg" alt="UPC" height="32">
+    <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="sidebar" aria-label="Menú"><svg class="ico"><use href="#i-menu"/></svg></button>
+  </header>
+
+  <!-- Barra lateral izquierda (solo "Actividades" está activa) -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><img src="assets/logo-upc-blanco.svg" alt="UPC" width="50" height="50"></div>
+    <nav class="main-nav" aria-label="Principal">
+      <ul>
+        <li><a class="nav-item" href="#" data-inactivo><svg class="ico"><use href="#i-home"/></svg>Inicio</a></li>
+        <li><a class="nav-item" href="#" data-inactivo><svg class="ico"><use href="#i-book"/></svg>Cursos</a></li>
+        <li><a class="nav-item" href="#" aria-current="page"><svg class="ico"><use href="#i-activity"/></svg>Actividades</a></li>
+        <li><a class="nav-item" href="#" data-inactivo><svg class="ico"><use href="#i-clip"/></svg>Evaluaciones</a></li>
+        <li><a class="nav-item" href="#" data-inactivo><svg class="ico"><use href="#i-cal"/></svg>Calendario</a></li>
+        <li><a class="nav-item" href="#" data-inactivo><svg class="ico"><use href="#i-award"/></svg>Calificaciones</a></li>
+        <li><a class="nav-item" href="#" data-inactivo><svg class="ico"><use href="#i-msg"/></svg>Mensajes</a></li>
+      </ul>
+    </nav>
+    <div class="profile">
+      <span class="avatar">MA</span>
+      <div><b>Mirella Asto</b><span>Estudiante</span></div>
+    </div>
+  </aside>
+
+  <!-- Contenido: Actividades -->
+  <main class="content">
+    <section class="page-heading">
+      <div>
+        <h1>Actividades</h1>
+        <p>Lista unificada de tareas y evaluaciones pendientes de todos tus cursos inscritos</p>
+      </div>
+      <button type="button" class="primary-button"><svg class="ico"><use href="#i-calplus"/></svg>Agregar actividad</button>
+    </section>
+
+    <section class="page-body">
+      <div class="info-banner"><svg class="ico"><use href="#i-check"/></svg>Vista unificada activa: Estás viendo las actividades pendientes integradas de tus 5 cursos matriculados.</div>
+
+      <div class="section-title">
+        <h2>Todas mis actividades pendientes</h2>
+        <span class="count-badge" id="total-badge"></span>
+      </div>
+      <p class="sin-fecha-linea" id="sin-fecha"></p>
+
+      <div class="filters">
+        <label>
+          <span class="sr-only">Curso</span>
+          <select id="f-curso">
+            <option value="todos">Todos los cursos</option>
+            <option value="md">Matemática Discreta</option>
+            <option value="ux">Diseño UX</option>
+            <option value="bd">Base de Datos</option>
+            <option value="p2">Programación II</option>
+            <option value="mi">Metodología de la Investigación</option>
+          </select>
+        </label>
+        <label>
+          <span class="sr-only">Orden</span>
+          <select id="f-orden">
+            <option value="proximidad">Ordenar por: Proximidad de vencimiento</option>
+            <option value="curso">Ordenar por: Curso</option>
+            <option value="peso">Ordenar por: Peso académico</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Filtros de actividades">
+        <button type="button" role="tab" class="active" data-tab="todos" id="tab-todos"></button>
+        <button type="button" role="tab" data-tab="semana" id="tab-semana"></button>
+        <button type="button" role="tab" data-tab="vencidas" id="tab-vencidas"></button>
+      </div>
+
+      <div class="activity-list" id="activities"></div>
+
+      <footer class="list-footer"><span id="foot-left"></span><span>Hora local · Lima (GMT-5)</span></footer>
+    </section>
+  </main>
+
+
+  <!-- ------------------------- Yuli, Gian y Martín ------------------------- -->
+  <!-- Barra vertical derecha «TODOS LOS ANUNCIOS» (retráctil) -->
+  <aside class="bar" id="ann-bar" role="button" tabindex="0" aria-expanded="false" aria-controls="ann-panel">
+    <svg class="ico" id="bar-chev"><use href="#i-left"/></svg>
+    <div class="bar-mid">
+      <div class="bar-label">
+        <span class="bar-text">TODOS LOS ANUNCIOS</span>
+        <span class="count-badge" id="bar-badge"></span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Panel de anuncios: se despliega hacia la izquierda -->
+  <section class="panel" id="ann-panel" aria-hidden="true">
+    <div class="panel-head">
+      <h2>TODOS LOS ANUNCIOS</h2>
+      <button type="button" class="outline-button small" id="panel-close"><svg class="ico"><use href="#i-x"/></svg>Cerrar</button>
+    </div>
+    <div class="panel-sum">
+      <span id="ann-sum"></span>
+      <span class="unread-count"><svg class="ico"><use href="#i-mail"/></svg><span id="ann-unread"></span></span>
+    </div>
+    <div id="announcements"></div>
+    <p class="panel-foot" id="ann-foot"></p>
+  </section>
+
+  <!-- ------------------------- Yuli, Gian y Martín ------------------------- -->
+
+</div>
+<script src="script.js"></script>
+</body>
+</html>
