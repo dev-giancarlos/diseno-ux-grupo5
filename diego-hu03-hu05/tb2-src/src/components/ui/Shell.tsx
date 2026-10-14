@@ -50,7 +50,7 @@ export default function Shell({ items, activo, usuario, children }: ShellProps) 
                     className={`relative flex h-10 items-center gap-3 px-3 text-[13px] no-underline foco-anillo ${
                       esActivo
                         ? "bg-sidebar-active font-semibold text-sidebar-foreground before:absolute before:inset-y-0 before:left-0 before:w-[3px] before:bg-sidebar-foreground"
-                        : "rounded-[6px] font-normal text-sidebar-muted"
+                        : "rounded-[6px] font-normal text-sidebar-muted hover:bg-white/6"
                     }`}
                   >
                     <Icono nombre={it.icono} />

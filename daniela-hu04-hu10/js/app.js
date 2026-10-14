@@ -27,6 +27,7 @@ const RUTAS = {
   inicio: '../hu10/inicio.html',
   evaluaciones: '../hu04/actividades.html',
   calificaciones: '../hu10/calificaciones.html',
+  actividad: '../../diego-hu03-hu05/tb2/#/actividades',
   detalle: id => `../hu10/detalle.html?curso=${id}`
 };
 
@@ -93,7 +94,7 @@ function dibujarEstructura(activo) {
   const items = [
     ['inicio', 'Inicio', RUTAS.inicio],
     ['cursos', 'Cursos', '#'],
-    ['actividad', 'Actividad', '#'],
+    ['actividad', 'Actividad', RUTAS.actividad],
     ['evaluaciones', 'Evaluaciones', RUTAS.evaluaciones],
     ['calendario', 'Calendario', '#'],
     ['calificaciones', 'Calificaciones', RUTAS.calificaciones],
