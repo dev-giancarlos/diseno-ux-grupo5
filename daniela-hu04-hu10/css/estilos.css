@@ -84,6 +84,7 @@ button { font-family: inherit; }
 .sidebar .btn { padding: 0 10px; }
 .sidebar__logo { display: flex; justify-content: center; padding: 4px 0 8px; }
 .sidebar__logo img { width: 48px; height: 48px; object-fit: contain; }
+.sidebar__logo a { display: flex; }
 .nav { display: flex; flex-direction: column; gap: 4px; }
 .nav a {
   display: flex; align-items: center; gap: 10px;

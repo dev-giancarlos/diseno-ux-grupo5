@@ -1,10 +1,10 @@
 /* Variables de color y tipografía globales */
 :root {
   --bg-main: #F3F4F6;
-  --bg-sidebar: #1E1E1E;
-  --sidebar-active: #333333;
+  --bg-sidebar: #111827;
+  --sidebar-active: #334155;
   --sidebar-text-muted: #D1D5DB;
-  --sidebar-text-active: #FFFFFF;
+  --sidebar-text-active: #F9FAFB;
   
   --card-bg: #FFFFFF;
   --text-main: #111827;
@@ -25,6 +25,7 @@
 
 body {
   font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
   background-color: var(--bg-main);
   color: var(--text-main);
   display: flex;
@@ -33,7 +34,7 @@ body {
 
 /* --- BARRA LATERAL (SIDEBAR) --- */
 .sidebar {
-  width: 220px;
+  width: 200px;
   background-color: var(--bg-sidebar);
   display: flex;
   flex-direction: column;
@@ -73,18 +74,23 @@ body {
 }
 
 .nav-item:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.06);
 }
 
 .nav-item.active {
+  border-radius: 0;
   background-color: var(--sidebar-active);
   color: var(--sidebar-text-active);
-  font-weight: 500;
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--sidebar-text-active);
 }
 
 .nav-item i {
   font-size: 16px;
+}
+
+.sidebar-logo a {
+  display: flex;
 }
 
 .sidebar-spacer {

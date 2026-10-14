@@ -126,7 +126,7 @@ export default function ActividadesRuben({ actividades, onAgregar, resaltado }: 
         </div>
         {n > 0 && (
           <p className="sin-fecha-linea">
-            {n === 1 ? "No incluye 1 actividad que aún no tiene fecha oficial." : `No incluye ${n} actividades que aún no tienen fecha oficial.`}
+            <span>{n === 1 ? <>No incluye <strong>1</strong> actividad que aún no tiene fecha oficial.</> : <>No incluye <strong>{n}</strong> actividades que aún no tienen fecha oficial.</>}</span>
             <a href={hrefSinFecha()}>
               Ver <img src={icons.chevron} alt="" />
             </a>

@@ -35,7 +35,9 @@ export default function Shell({ items, activo, usuario, children }: ShellProps) 
         data-name="sidebar"
       >
         <div className="hidden justify-center md:flex">
-          <img src="assets/logo-upc-blanco.svg" alt="UPC" className="size-[50px]" />
+          <a href="../../index.html" aria-label="Volver al índice" className="flex rounded-[6px] foco-anillo">
+            <img src="assets/logo-upc-blanco.svg" alt="UPC" className="size-[50px]" />
+          </a>
         </div>
         <nav aria-label="Principal" className="flex-1">
           <ul className="m-0 flex list-none flex-col gap-1 p-0">
@@ -50,7 +52,7 @@ export default function Shell({ items, activo, usuario, children }: ShellProps) 
                     className={`relative flex h-10 items-center gap-3 px-3 text-[13px] no-underline foco-anillo ${
                       esActivo
                         ? "bg-sidebar-active font-semibold text-sidebar-foreground before:absolute before:inset-y-0 before:left-0 before:w-[3px] before:bg-sidebar-foreground"
-                        : "rounded-[6px] font-normal text-sidebar-muted"
+                        : "rounded-[6px] font-normal text-sidebar-muted hover:bg-white/6"
                     }`}
                   >
                     <Icono nombre={it.icono} />
