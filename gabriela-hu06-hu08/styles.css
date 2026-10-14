@@ -89,6 +89,10 @@ body {
   font-size: 16px;
 }
 
+.sidebar-logo a {
+  display: flex;
+}
+
 .sidebar-spacer {
   flex: 1;
 }

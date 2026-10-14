@@ -104,7 +104,7 @@ function dibujarEstructura(activo) {
     `<a href="${href}" class="${id === activo ? 'is-activo' : ''}" ${id === activo ? 'aria-current="page"' : ''}>${icono(id)}<span>${texto}</span></a>`;
 
   document.getElementById('sidebar').innerHTML = `
-    <div class="sidebar__logo"><img src="../img/logo-upc-blanco.svg" alt="Aula Virtual UPC"></div>
+    <div class="sidebar__logo"><a href="../../index.html" aria-label="Volver al índice"><img src="../img/logo-upc-blanco.svg" alt="Aula Virtual UPC"></a></div>
     <nav class="nav" aria-label="Menú principal">${items.map(enlace).join('')}</nav>
     <div class="sidebar__usuario">
       <span class="avatar">${ESTUDIANTE.iniciales}</span>
