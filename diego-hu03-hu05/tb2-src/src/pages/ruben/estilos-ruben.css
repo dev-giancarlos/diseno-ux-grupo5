@@ -316,6 +316,11 @@ select:focus-visible {
   font-size: 13px;
 }
 
+.sin-fecha-linea strong {
+  color: #4338ca;
+  font-weight: 600;
+}
+
 .sin-fecha-linea a {
   display: inline-flex;
   align-items: center;
