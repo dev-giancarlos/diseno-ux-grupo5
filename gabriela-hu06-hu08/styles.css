@@ -955,6 +955,10 @@ body {
 .btn-close-action:hover {
   background-color: #F9FAFB;
 }
+.sidebar-logo a {
+  display: flex;
+}
+
 .sidebar-logo-img {
   width: 36px;
   height: 36px;

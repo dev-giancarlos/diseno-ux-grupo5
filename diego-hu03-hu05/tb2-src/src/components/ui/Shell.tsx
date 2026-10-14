@@ -35,7 +35,9 @@ export default function Shell({ items, activo, usuario, children }: ShellProps) 
         data-name="sidebar"
       >
         <div className="hidden justify-center md:flex">
-          <img src="assets/logo-upc-blanco.svg" alt="UPC" className="size-[50px]" />
+          <a href="../../index.html" aria-label="Volver al índice" className="flex rounded-[6px] foco-anillo">
+            <img src="assets/logo-upc-blanco.svg" alt="UPC" className="size-[50px]" />
+          </a>
         </div>
         <nav aria-label="Principal" className="flex-1">
           <ul className="m-0 flex list-none flex-col gap-1 p-0">
