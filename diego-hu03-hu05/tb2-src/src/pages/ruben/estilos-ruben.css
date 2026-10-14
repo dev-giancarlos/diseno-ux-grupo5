@@ -329,7 +329,7 @@ select:focus-visible {
   font-family: Inter, sans-serif;
   font-weight: 600;
   font-weight: 600;
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 .section-title h2,
