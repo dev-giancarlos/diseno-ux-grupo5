@@ -22,6 +22,7 @@ a{text-decoration:none;color:inherit}
 .mobile-header{display:none}
 .sidebar{position:sticky;top:0;height:100dvh;width:200px;flex:0 0 200px;display:flex;flex-direction:column;gap:24px;padding:16px;background:var(--primary)}
 .brand{display:flex;justify-content:center}
+.brand a,.mobile-header > a{display:flex}
 .main-nav{flex:1}
 .main-nav ul{list-style:none;display:flex;flex-direction:column;gap:4px}
 .nav-item{position:relative;display:flex;align-items:center;gap:12px;height:40px;padding:0 12px;border-radius:6px;color:var(--sidebar-muted);font-size:13px}

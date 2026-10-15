@@ -59,9 +59,10 @@ function ToastActivo({ aviso, onCerrar }: { aviso: AvisoToast; onCerrar: () => v
     return () => window.clearTimeout(t);
   }, [pausado, aviso, onCerrar]);
 
+  // right-16 deja libre la barra fija de anuncios, que ocupa 48px del borde derecho.
   return (
     <div
-      className="fixed right-4 bottom-4 left-4 z-50 sm:left-auto sm:w-[286px]"
+      className="fixed right-16 bottom-4 left-4 z-50 sm:left-auto sm:w-[286px]"
       onMouseEnter={() => setEncima(true)}
       onMouseLeave={() => setEncima(false)}
       onFocus={() => setEnfocado(true)}
